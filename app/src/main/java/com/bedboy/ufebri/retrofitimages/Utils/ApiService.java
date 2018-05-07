@@ -11,5 +11,5 @@ import retrofit2.http.GET;
 
 public interface ApiService {
     @GET("api/breed/boxer/images")
-    Call<List<Images>> getImages();
+    Call<Images> getImages();
 }
