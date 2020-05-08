@@ -1,10 +1,10 @@
 package com.bedboy.ufebri.retrofitimages;
 
 import android.app.ProgressDialog;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 
 import com.bedboy.ufebri.retrofitimages.Utils.BaseApps;
@@ -16,6 +16,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
 
 public class MainActivity extends AppCompatActivity {
 
