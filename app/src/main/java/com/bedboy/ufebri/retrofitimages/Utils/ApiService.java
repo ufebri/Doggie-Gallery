@@ -1,6 +1,6 @@
 package com.bedboy.ufebri.retrofitimages.Utils;
 
-import java.util.List;
+import com.bedboy.ufebri.retrofitimages.entity.Images;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

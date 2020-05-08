@@ -1,4 +1,4 @@
-package com.bedboy.ufebri.retrofitimages.Utils;
+package com.bedboy.ufebri.retrofitimages.entity;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

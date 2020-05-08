@@ -1,7 +1,6 @@
 package com.bedboy.ufebri.retrofitimages;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bedboy.ufebri.retrofitimages.Utils.BaseApps;
-import com.bedboy.ufebri.retrofitimages.Utils.Images;
+import com.bedboy.ufebri.retrofitimages.entity.Images;
 
 import java.util.ArrayList;
 import java.util.List;
