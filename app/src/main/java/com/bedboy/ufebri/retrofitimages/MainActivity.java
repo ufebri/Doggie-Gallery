@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupBottomNavigation(Bundle savedInstanceState) {
-        //TODO: Buat Navigation Viewnya (1)
         BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener
                 = item -> {
             Fragment fragment;
