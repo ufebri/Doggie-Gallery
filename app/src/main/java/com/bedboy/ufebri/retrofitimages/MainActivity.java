@@ -35,12 +35,6 @@ public class MainActivity extends AppCompatActivity {
                             .replace(R.id.container_layout, fragment, fragment.getClass().getSimpleName())
                             .commit();
                     return true;
-                case R.id.navigation_favorite:
-                    fragment = new FavoriteFragment();
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.container_layout, fragment, fragment.getClass().getSimpleName())
-                            .commit();
-                    return true;
             }
             return false;
         };
