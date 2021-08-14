@@ -12,10 +12,10 @@
         <ImageView
             android:id="@+id/iv_animal"
             android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:maxWidth="180dp"
-            android:scaleType="centerCrop"
+            android:layout_height="wrap_content"
+            android:maxHeight="250dp"
             tools:ignore="ContentDescription"
+            android:scaleType="centerCrop"
             tools:src="@mipmap/ic_launcher" />
 
     </RelativeLayout>

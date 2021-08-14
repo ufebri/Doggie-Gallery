@@ -8,8 +8,6 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "doggieEntities")
 public class DoggieEntity {
 
-
-
     @NonNull
     @ColumnInfo(name = "type")
     private final String type;
