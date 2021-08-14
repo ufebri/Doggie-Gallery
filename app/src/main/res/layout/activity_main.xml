@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.bedboy.ufebri.retrofitimages.MainActivity">
+    tools:context="com.bedboy.ufebri.doggie.MainActivity">
 
     <FrameLayout
         android:id="@+id/container_layout"

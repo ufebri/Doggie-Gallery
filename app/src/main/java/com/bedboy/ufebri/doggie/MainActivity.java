@@ -1,10 +1,11 @@
-package com.bedboy.ufebri.retrofitimages;
+package com.bedboy.ufebri.doggie;
 
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.bedboy.ufebri.doggie.ui.home.HomeFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 

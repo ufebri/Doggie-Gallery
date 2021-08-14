@@ -1,4 +1,4 @@
-package com.bedboy.ufebri.retrofitimages;
+package com.bedboy.ufebri.doggie;
 
 import org.junit.Test;
 
