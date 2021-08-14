@@ -13,7 +13,9 @@
             android:id="@+id/iv_animal"
             android:layout_width="match_parent"
             android:layout_height="180dp"
+            android:maxWidth="180dp"
             android:scaleType="centerCrop"
+            tools:ignore="ContentDescription"
             tools:src="@mipmap/ic_launcher" />
 
     </RelativeLayout>

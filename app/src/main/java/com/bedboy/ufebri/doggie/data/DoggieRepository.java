@@ -2,7 +2,6 @@ package com.bedboy.ufebri.doggie.data;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.bedboy.ufebri.doggie.data.source.local.LocalDataSource;
 import com.bedboy.ufebri.doggie.data.source.local.entity.DoggieEntity;
@@ -38,27 +37,33 @@ public class DoggieRepository implements DoggieDataSource {
     }
 
     @Override
-    public LiveData<Resource<List<String>>> getAllImage() {
+    public LiveData<Resource<List<DoggieEntity>>> getAllImage() {
         return new NetworkBoundResource<List<DoggieEntity>, List<String>>(appExecutors) {
 
             @Override
             protected LiveData<List<DoggieEntity>> loadFromDB() {
-                return null;
+                return localDataSource.getAllDoggie();
             }
 
             @Override
             protected Boolean shouldFetch(List<DoggieEntity> data) {
-                return null;
+                return (data == null) || (data.size() == 0);
             }
 
             @Override
             protected LiveData<ApiResponse<List<String>>> createCall() {
-                return null;
+                return remoteDataSource.getAllImage();
             }
 
             @Override
             protected void saveCallResult(List<String> data) {
-
+                ArrayList<DoggieEntity> doggieList = new ArrayList<>();
+                for (String response : data) {
+                    DoggieEntity doggie = new DoggieEntity("hover", response);
+                    doggieList.add(doggie);
+                }
+                localDataSource.insertDoggie(doggieList);
             }
         }.asLiveData();
+    }
 }

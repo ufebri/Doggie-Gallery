@@ -10,14 +10,19 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.bedboy.ufebri.doggie.ImagesAdapter;
 import com.bedboy.ufebri.doggie.R;
 import com.bedboy.ufebri.doggie.data.BaseResponse;
+import com.bedboy.ufebri.doggie.data.source.local.entity.DoggieEntity;
 import com.bedboy.ufebri.doggie.databinding.FragmentHomeBinding;
 import com.bedboy.ufebri.doggie.network.ApiConfig;
+import com.bedboy.ufebri.doggie.viewmodel.ViewModelFactory;
+import com.bedboy.ufebri.doggie.vo.Status;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +35,7 @@ public class HomeFragment extends Fragment {
 
 
     private ImagesAdapter imagesAdapter;
-    private List<String> imagesGrid = new ArrayList<>();
-    private ProgressBar progressBar;
+    private List<DoggieEntity> imagesGrid = new ArrayList<>();
     private HomeViewModel viewModel;
     private FragmentHomeBinding fragmentHomeBinding;
 
@@ -49,35 +53,38 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+
         if (getActivity() != null) {
-            
+            ViewModelFactory factory = ViewModelFactory.getInstance(getActivity().getApplication());
+            viewModel = new ViewModelProvider(this, factory).get(HomeViewModel.class);
+            viewModel.getImage().observe(getViewLifecycleOwner(),
+                    result -> {
+                        if (result != null) {
+                            switch (result.status) {
+                                case LOADING:
+                                    fragmentHomeBinding.pbHome.setVisibility(View.VISIBLE);
+                                    fragmentHomeBinding.recAnimal.setVisibility(View.GONE);
+                                    break;
+                                case SUCCESS:
+                                    //Setup Recyclerview
+                                    imagesGrid.addAll(result.data);
+                                    fragmentHomeBinding.recAnimal.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+                                    fragmentHomeBinding.recAnimal.setHasFixedSize(true);
+                                    imagesAdapter = new ImagesAdapter(imagesGrid);
+                                    fragmentHomeBinding.recAnimal.setAdapter(imagesAdapter);
+
+                                    fragmentHomeBinding.pbHome.setVisibility(View.GONE);
+                                    fragmentHomeBinding.recAnimal.setVisibility(View.VISIBLE);
+                                    break;
+                                case ERROR:
+                                    fragmentHomeBinding.pbHome.setVisibility(View.GONE);
+                                    fragmentHomeBinding.recAnimal.setVisibility(View.GONE);
+                                    Toast.makeText(getContext(), "Failed Get Image", Toast.LENGTH_SHORT).show();
+                                    break;
+                            }
+                        }
+                    });
         }
-    }
-
-    private void initData(View view) {
-        RecyclerView recyclerView = view.findViewById(R.id.rec_animal);
-        recyclerView.setHasFixedSize(true);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
-        recyclerView.setLayoutManager(gridLayoutManager);
-        imagesAdapter = new ImagesAdapter(imagesGrid);
-        recyclerView.setAdapter(imagesAdapter);
-    }
-
-    private void showData() {
-        progressBar.setVisibility(View.VISIBLE);
-        ApiConfig.getApiService().getImages().enqueue(new Callback<BaseResponse>() {
-            @Override
-            public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
-                imagesGrid.addAll(response.body().getMessage());
-                imagesGrid.size();
-                imagesAdapter.notifyDataSetChanged();
-                progressBar.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onFailure(Call<BaseResponse> call, Throwable t) {
-                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 }

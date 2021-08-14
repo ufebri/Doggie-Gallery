@@ -1,15 +1,15 @@
 package com.bedboy.ufebri.doggie;
 
-import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bedboy.ufebri.doggie.data.source.local.entity.DoggieEntity;
+import com.bedboy.ufebri.doggie.databinding.ItemImageBinding;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
@@ -18,10 +18,9 @@ import java.util.List;
  */
 
 public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.Holder> {
-    private List<String> imagesGrid;
-    Context context;
+    private List<DoggieEntity> imagesGrid;
 
-    public ImagesAdapter(List<String> imagesGrid) {
+    public ImagesAdapter(List<DoggieEntity> imagesGrid) {
         this.imagesGrid = imagesGrid;
     }
 
@@ -29,10 +28,8 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.Holder> {
     @NonNull
     @Override
     public ImagesAdapter.Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_image,
-                parent, false);
-        context = parent.getContext();
-        return new Holder(view);
+        ItemImageBinding binding = ItemImageBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+        return new Holder(binding);
     }
 
     @Override
@@ -46,19 +43,19 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.Holder> {
     }
 
     public class Holder extends RecyclerView.ViewHolder {
-        public Holder(View itemView) {
-            super(itemView);
+
+        final ItemImageBinding binding;
+
+        Holder(ItemImageBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
         }
 
-        public void bind(int position) {
-            String gambar = imagesGrid.get(position);
-            ImageView gambarBinatang = itemView.findViewById(R.id.iv_animal);
-
-            Glide.with(context)
-                    .load(gambar)
-                    .placeholder(R.mipmap.ic_launcher)
-                    .error(R.mipmap.ic_launcher)
-                    .into(gambarBinatang);
+        void bind(int position) {
+            Glide.with(itemView.getContext())
+                    .load(imagesGrid.get(position))
+                    .apply(RequestOptions.overrideOf(180,250))
+                    .into(binding.ivAnimal);
         }
     }
 }
