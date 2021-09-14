@@ -9,5 +9,7 @@ import java.util.List;
 
 public interface DoggieDataSource {
 
-    LiveData<Resource<List<DoggieEntity>>> getAllImage();
+    LiveData<Resource<List<DoggieEntity>>> getAllImage(String countItem);
+
+    LiveData<Resource<List<DoggieEntity>>> getLikedImage(String countItem);
 }

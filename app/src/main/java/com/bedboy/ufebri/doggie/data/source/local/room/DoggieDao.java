@@ -13,8 +13,8 @@ import java.util.List;
 @Dao
 public interface DoggieDao {
 
-    @Query("SELECT * FROM doggieEntities")
-    LiveData<List<DoggieEntity>> getDataDoggie();
+    @Query("SELECT * FROM doggieEntities WHERE doggieEntities.tag LIKE :tagName")
+    LiveData<List<DoggieEntity>> getDataDoggie(String tagName);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertDoggie(List<DoggieEntity> doggie);

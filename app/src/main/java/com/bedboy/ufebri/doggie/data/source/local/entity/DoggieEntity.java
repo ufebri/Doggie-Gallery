@@ -17,10 +17,15 @@ public class DoggieEntity {
     @ColumnInfo(name = "link")
     private final String link;
 
+    @NonNull
+    @ColumnInfo(name = "tag")
+    private final String tag;
 
-    public DoggieEntity(@NonNull String type, @NonNull String link) {
+
+    public DoggieEntity(@NonNull String type, @NonNull String link, @NonNull String tag) {
         this.type = type;
         this.link = link;
+        this.tag = tag;
     }
 
     @NonNull
@@ -31,5 +36,10 @@ public class DoggieEntity {
     @NonNull
     public String getLink() {
         return link;
+    }
+
+    @NonNull
+    public String getTag() {
+        return tag;
     }
 }

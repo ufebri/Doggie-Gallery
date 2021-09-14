@@ -24,8 +24,8 @@ public class LocalDataSource {
         return INSTANCE;
     }
 
-    public LiveData<List<DoggieEntity>> getAllDoggie() {
-        return doggieDao.getDataDoggie();
+    public LiveData<List<DoggieEntity>> getAllDoggie(String tagName) {
+        return doggieDao.getDataDoggie(tagName);
     }
 
     public void insertDoggie(List<DoggieEntity> doggie) {

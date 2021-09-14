@@ -26,9 +26,9 @@ public class RemoteDataSource {
         return INSTANCE;
     }
 
-    public LiveData<ApiResponse<List<String>>> getAllImage() {
+    public LiveData<ApiResponse<List<String>>> getAllImage(String countItem) {
         MutableLiveData<ApiResponse<List<String>>> resultImage = new MutableLiveData<>();
-        Call<BaseResponse> client = ApiConfig.getApiService().getAllRandomImages("50");
+        Call<BaseResponse> client = ApiConfig.getApiService().getAllRandomImages(countItem);
         client.enqueue(new Callback<BaseResponse>() {
             @Override
             public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {

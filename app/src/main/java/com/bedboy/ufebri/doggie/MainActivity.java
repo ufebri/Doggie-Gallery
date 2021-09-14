@@ -5,12 +5,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -81,11 +77,13 @@ public class MainActivity extends AppCompatActivity {
         public Fragment createFragment(int position) {
             switch (position) {
                 case 0:
+                    return homeFragment;
                 case 1:
+                    return popularFragment;
                 case 2:
-                    return new HomeFragment();
+                    return likedFragment;
                 case 3:
-                    return new CategoriesFragment();
+                    return categoriesFragment;
             }
             return new HomeFragment();
         }

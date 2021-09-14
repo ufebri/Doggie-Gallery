@@ -37,12 +37,12 @@ public class DoggieRepository implements DoggieDataSource {
     }
 
     @Override
-    public LiveData<Resource<List<DoggieEntity>>> getAllImage() {
+    public LiveData<Resource<List<DoggieEntity>>> getAllImage(String countItem) {
         return new NetworkBoundResource<List<DoggieEntity>, List<String>>(appExecutors) {
 
             @Override
             protected LiveData<List<DoggieEntity>> loadFromDB() {
-                return localDataSource.getAllDoggie();
+                return localDataSource.getAllDoggie("for-you");
             }
 
             @Override
@@ -52,18 +52,51 @@ public class DoggieRepository implements DoggieDataSource {
 
             @Override
             protected LiveData<ApiResponse<List<String>>> createCall() {
-                return remoteDataSource.getAllImage();
+                return remoteDataSource.getAllImage(countItem);
             }
 
             /**
-             *
-             * Regex For get Type Dogg
+             * Regex For get Type Dog
              */
             @Override
             protected void saveCallResult(List<String> data) {
                 ArrayList<DoggieEntity> doggieList = new ArrayList<>();
                 for (String response : data) {
-                    DoggieEntity doggie = new DoggieEntity(response.split("/")[4], response);
+                    DoggieEntity doggie = new DoggieEntity(response.split("/")[4], response, "for-you");
+                    doggieList.add(doggie);
+                }
+                localDataSource.insertDoggie(doggieList);
+            }
+        }.asLiveData();
+    }
+
+    @Override
+    public LiveData<Resource<List<DoggieEntity>>> getLikedImage(String countItem) {
+        return new NetworkBoundResource<List<DoggieEntity>, List<String>>(appExecutors) {
+
+            @Override
+            protected LiveData<List<DoggieEntity>> loadFromDB() {
+                return localDataSource.getAllDoggie("liked");
+            }
+
+            @Override
+            protected Boolean shouldFetch(List<DoggieEntity> data) {
+                return (data == null) || (data.size() == 0);
+            }
+
+            @Override
+            protected LiveData<ApiResponse<List<String>>> createCall() {
+                return remoteDataSource.getAllImage(countItem);
+            }
+
+            /**
+             * Regex For get Type Dog
+             */
+            @Override
+            protected void saveCallResult(List<String> data) {
+                ArrayList<DoggieEntity> doggieList = new ArrayList<>();
+                for (String response : data) {
+                    DoggieEntity doggie = new DoggieEntity(response.split("/")[4], response, "liked");
                     doggieList.add(doggie);
                 }
                 localDataSource.insertDoggie(doggieList);

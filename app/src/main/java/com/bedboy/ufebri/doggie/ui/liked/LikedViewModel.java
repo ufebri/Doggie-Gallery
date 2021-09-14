@@ -1,4 +1,4 @@
-package com.bedboy.ufebri.doggie.ui.home;
+package com.bedboy.ufebri.doggie.ui.liked;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
@@ -10,18 +10,18 @@ import com.bedboy.ufebri.doggie.vo.Resource;
 
 import java.util.List;
 
-public class HomeViewModel extends ViewModel {
+public class LikedViewModel extends ViewModel {
 
     private final DoggieRepository repository;
 
-    public HomeViewModel(DoggieRepository repository) {
+    public LikedViewModel(DoggieRepository repository) {
         this.repository = repository;
     }
 
     private LiveData<Resource<List<DoggieEntity>>> data;
 
     public LiveData<Resource<List<DoggieEntity>>> getImage() {
-        if (data == null) data = repository.getAllImage(Constant.IMAGE_ITEM_COUNT_LOADED);
+        if (data == null) data = repository.getLikedImage(Constant.IMAGE_ITEM_COUNT_LOADED);
         return data;
     }
 }

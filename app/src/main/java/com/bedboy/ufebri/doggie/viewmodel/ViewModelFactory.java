@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.bedboy.ufebri.doggie.data.DoggieRepository;
 import com.bedboy.ufebri.doggie.di.Injection;
 import com.bedboy.ufebri.doggie.ui.home.HomeViewModel;
+import com.bedboy.ufebri.doggie.ui.liked.LikedViewModel;
 
 public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 
@@ -34,8 +35,11 @@ public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        if (modelClass.isAssignableFrom(HomeViewModel.class)){
+        if (modelClass.isAssignableFrom(HomeViewModel.class)) {
             return (T) new HomeViewModel(doggieRepository);
+        }
+        if (modelClass.isAssignableFrom(LikedViewModel.class)) {
+            return (T) new LikedViewModel(doggieRepository);
         }
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
     }
