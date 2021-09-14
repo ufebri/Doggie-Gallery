@@ -55,11 +55,15 @@ public class DoggieRepository implements DoggieDataSource {
                 return remoteDataSource.getAllImage();
             }
 
+            /**
+             *
+             * Regex For get Type Dogg
+             */
             @Override
             protected void saveCallResult(List<String> data) {
                 ArrayList<DoggieEntity> doggieList = new ArrayList<>();
                 for (String response : data) {
-                    DoggieEntity doggie = new DoggieEntity("hover", response);
+                    DoggieEntity doggie = new DoggieEntity(response.split("/")[4], response);
                     doggieList.add(doggie);
                 }
                 localDataSource.insertDoggie(doggieList);
