@@ -28,6 +28,10 @@ public class LocalDataSource {
         return doggieDao.getDataDoggie(tagName);
     }
 
+    public LiveData<List<DoggieEntity>> getCategoriesDogie() {
+        return doggieDao.getCategories();
+    }
+
     public void insertDoggie(List<DoggieEntity> doggie) {
         doggieDao.insertDoggie(doggie);
     }

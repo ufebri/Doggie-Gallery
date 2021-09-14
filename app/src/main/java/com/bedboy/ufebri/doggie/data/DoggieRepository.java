@@ -3,6 +3,7 @@ package com.bedboy.ufebri.doggie.data;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
+import com.bedboy.ufebri.doggie.config.Constant;
 import com.bedboy.ufebri.doggie.data.source.local.LocalDataSource;
 import com.bedboy.ufebri.doggie.data.source.local.entity.DoggieEntity;
 import com.bedboy.ufebri.doggie.data.source.remote.ApiResponse;
@@ -131,6 +132,40 @@ public class DoggieRepository implements DoggieDataSource {
                 ArrayList<DoggieEntity> doggieList = new ArrayList<>();
                 for (String response : data) {
                     DoggieEntity doggie = new DoggieEntity(response.split("/")[4], response, "popular");
+                    doggieList.add(doggie);
+                }
+                localDataSource.insertDoggie(doggieList);
+            }
+        }.asLiveData();
+    }
+
+    @Override
+    public LiveData<Resource<List<DoggieEntity>>> getCategories() {
+        return new NetworkBoundResource<List<DoggieEntity>, List<String>>(appExecutors) {
+
+            @Override
+            protected LiveData<List<DoggieEntity>> loadFromDB() {
+                return localDataSource.getCategoriesDogie();
+            }
+
+            @Override
+            protected Boolean shouldFetch(List<DoggieEntity> data) {
+                return (data == null) || (data.size() == 0);
+            }
+
+            @Override
+            protected LiveData<ApiResponse<List<String>>> createCall() {
+                return remoteDataSource.getAllImage(Constant.IMAGE_ITEM_COUNT_LOADED);
+            }
+
+            /**
+             * Regex For get Type Dog
+             */
+            @Override
+            protected void saveCallResult(List<String> data) {
+                ArrayList<DoggieEntity> doggieList = new ArrayList<>();
+                for (String response : data) {
+                    DoggieEntity doggie = new DoggieEntity(response.split("/")[4], response, "for-you");
                     doggieList.add(doggie);
                 }
                 localDataSource.insertDoggie(doggieList);

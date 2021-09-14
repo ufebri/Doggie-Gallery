@@ -1,4 +1,4 @@
-package com.bedboy.ufebri.doggie;
+package com.bedboy.ufebri.doggie.ui;
 
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.bedboy.ufebri.doggie.R;
 import com.bedboy.ufebri.doggie.ui.categories.CategoriesFragment;
 import com.bedboy.ufebri.doggie.ui.home.HomeFragment;
 import com.bedboy.ufebri.doggie.ui.liked.LikedFragment;

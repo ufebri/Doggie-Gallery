@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.bedboy.ufebri.doggie.data.DoggieRepository;
 import com.bedboy.ufebri.doggie.di.Injection;
+import com.bedboy.ufebri.doggie.ui.categories.CategoriesViewModel;
 import com.bedboy.ufebri.doggie.ui.home.HomeViewModel;
 import com.bedboy.ufebri.doggie.ui.liked.LikedViewModel;
 import com.bedboy.ufebri.doggie.ui.popular.PopularViewModel;
@@ -44,6 +45,9 @@ public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
         }
         if (modelClass.isAssignableFrom(PopularViewModel.class)) {
             return (T) new PopularViewModel(doggieRepository);
+        }
+        if (modelClass.isAssignableFrom(CategoriesViewModel.class)) {
+            return (T) new CategoriesViewModel(doggieRepository);
         }
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
     }

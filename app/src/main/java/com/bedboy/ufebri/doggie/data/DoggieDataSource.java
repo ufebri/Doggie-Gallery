@@ -14,4 +14,6 @@ public interface DoggieDataSource {
     LiveData<Resource<List<DoggieEntity>>> getLikedImage(String countItem);
 
     LiveData<Resource<List<DoggieEntity>>> getPopularImage(String countItem);
+
+    LiveData<Resource<List<DoggieEntity>>> getCategories();
 }

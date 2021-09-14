@@ -13,8 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.bedboy.ufebri.doggie.ImagesAdapter;
-import com.bedboy.ufebri.doggie.R;
+import com.bedboy.ufebri.doggie.ui.ImagesAdapter;
 import com.bedboy.ufebri.doggie.data.source.local.entity.DoggieEntity;
 import com.bedboy.ufebri.doggie.databinding.FragmentLikedBinding;
 import com.bedboy.ufebri.doggie.viewmodel.ViewModelFactory;
