@@ -10,6 +10,7 @@ import com.bedboy.ufebri.doggie.data.DoggieRepository;
 import com.bedboy.ufebri.doggie.di.Injection;
 import com.bedboy.ufebri.doggie.ui.home.HomeViewModel;
 import com.bedboy.ufebri.doggie.ui.liked.LikedViewModel;
+import com.bedboy.ufebri.doggie.ui.popular.PopularViewModel;
 
 public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 
@@ -40,6 +41,9 @@ public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
         }
         if (modelClass.isAssignableFrom(LikedViewModel.class)) {
             return (T) new LikedViewModel(doggieRepository);
+        }
+        if (modelClass.isAssignableFrom(PopularViewModel.class)) {
+            return (T) new PopularViewModel(doggieRepository);
         }
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
     }

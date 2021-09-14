@@ -103,4 +103,38 @@ public class DoggieRepository implements DoggieDataSource {
             }
         }.asLiveData();
     }
+
+    @Override
+    public LiveData<Resource<List<DoggieEntity>>> getPopularImage(String countItem) {
+        return new NetworkBoundResource<List<DoggieEntity>, List<String>>(appExecutors) {
+
+            @Override
+            protected LiveData<List<DoggieEntity>> loadFromDB() {
+                return localDataSource.getAllDoggie("popular");
+            }
+
+            @Override
+            protected Boolean shouldFetch(List<DoggieEntity> data) {
+                return (data == null) || (data.size() == 0);
+            }
+
+            @Override
+            protected LiveData<ApiResponse<List<String>>> createCall() {
+                return remoteDataSource.getAllImage(countItem);
+            }
+
+            /**
+             * Regex For get Type Dog
+             */
+            @Override
+            protected void saveCallResult(List<String> data) {
+                ArrayList<DoggieEntity> doggieList = new ArrayList<>();
+                for (String response : data) {
+                    DoggieEntity doggie = new DoggieEntity(response.split("/")[4], response, "popular");
+                    doggieList.add(doggie);
+                }
+                localDataSource.insertDoggie(doggieList);
+            }
+        }.asLiveData();
+    }
 }
