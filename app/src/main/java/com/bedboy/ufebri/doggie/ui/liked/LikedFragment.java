@@ -1,5 +1,6 @@
 package com.bedboy.ufebri.doggie.ui.liked;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import com.bedboy.ufebri.doggie.ui.ImagesAdapter;
 import com.bedboy.ufebri.doggie.data.source.local.entity.DoggieEntity;
 import com.bedboy.ufebri.doggie.databinding.FragmentLikedBinding;
+import com.bedboy.ufebri.doggie.ui.detail.DetailActivity;
 import com.bedboy.ufebri.doggie.viewmodel.ViewModelFactory;
 
 import java.util.ArrayList;
@@ -60,7 +62,7 @@ public class LikedFragment extends Fragment {
                                         imagesGrid.addAll(result.data);
                                         fragmentLikedBinding.rvLiked.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
                                         fragmentLikedBinding.rvLiked.setHasFixedSize(true);
-                                        adapter = new ImagesAdapter(imagesGrid);
+                                        adapter = new ImagesAdapter(imagesGrid, item -> startActivity(new Intent(getActivity(), DetailActivity.class).putExtra("link", item.getLink())));
                                         fragmentLikedBinding.rvLiked.setAdapter(adapter);
 
                                         fragmentLikedBinding.pbLiked.setVisibility(View.GONE);

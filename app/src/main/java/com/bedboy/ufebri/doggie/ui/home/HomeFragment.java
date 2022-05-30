@@ -1,5 +1,6 @@
 package com.bedboy.ufebri.doggie.ui.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.bedboy.ufebri.doggie.ui.ImagesAdapter;
 import com.bedboy.ufebri.doggie.data.source.local.entity.DoggieEntity;
 import com.bedboy.ufebri.doggie.databinding.FragmentHomeBinding;
+import com.bedboy.ufebri.doggie.ui.detail.DetailActivity;
 import com.bedboy.ufebri.doggie.viewmodel.ViewModelFactory;
 
 import java.util.ArrayList;
@@ -57,14 +59,16 @@ public class HomeFragment extends Fragment {
                                     break;
                                 case SUCCESS:
                                     //Setup Recyclerview
-                                    imagesGrid.addAll(result.data);
-                                    fragmentHomeBinding.recAnimal.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-                                    fragmentHomeBinding.recAnimal.setHasFixedSize(true);
-                                    imagesAdapter = new ImagesAdapter(imagesGrid);
-                                    fragmentHomeBinding.recAnimal.setAdapter(imagesAdapter);
+                                    if (result.data != null) {
+                                        imagesGrid.addAll(result.data);
+                                        fragmentHomeBinding.recAnimal.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+                                        fragmentHomeBinding.recAnimal.setHasFixedSize(true);
+                                        imagesAdapter = new ImagesAdapter(imagesGrid, item -> startActivity(new Intent(getActivity(), DetailActivity.class).putExtra("link", item.getLink())));
+                                        fragmentHomeBinding.recAnimal.setAdapter(imagesAdapter);
 
-                                    fragmentHomeBinding.pbHome.setVisibility(View.GONE);
-                                    fragmentHomeBinding.recAnimal.setVisibility(View.VISIBLE);
+                                        fragmentHomeBinding.pbHome.setVisibility(View.GONE);
+                                        fragmentHomeBinding.recAnimal.setVisibility(View.VISIBLE);
+                                    }
                                     break;
                                 case ERROR:
                                     fragmentHomeBinding.pbHome.setVisibility(View.GONE);

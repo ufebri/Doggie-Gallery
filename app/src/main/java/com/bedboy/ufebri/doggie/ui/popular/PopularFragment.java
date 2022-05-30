@@ -1,5 +1,6 @@
 package com.bedboy.ufebri.doggie.ui.popular;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.bedboy.ufebri.doggie.ui.ImagesAdapter;
 import com.bedboy.ufebri.doggie.data.source.local.entity.DoggieEntity;
 import com.bedboy.ufebri.doggie.databinding.FragmentPopularBinding;
+import com.bedboy.ufebri.doggie.ui.detail.DetailActivity;
 import com.bedboy.ufebri.doggie.viewmodel.ViewModelFactory;
 
 import java.util.ArrayList;
@@ -58,7 +60,7 @@ public class PopularFragment extends Fragment {
                                         imagesGrid.addAll(result.data);
                                         binding.rvPopular.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
                                         binding.rvPopular.setHasFixedSize(true);
-                                        adapter = new ImagesAdapter(imagesGrid);
+                                        adapter = new ImagesAdapter(imagesGrid, item -> startActivity(new Intent(getActivity(), DetailActivity.class).putExtra("link", item.getLink())));
                                         binding.rvPopular.setAdapter(adapter);
 
                                         binding.pbPopular.setVisibility(View.GONE);

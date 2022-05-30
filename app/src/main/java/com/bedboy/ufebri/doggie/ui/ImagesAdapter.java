@@ -20,10 +20,12 @@ import java.util.List;
  */
 
 public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.Holder> {
-    private List<DoggieEntity> imagesGrid;
+    private final List<DoggieEntity> imagesGrid;
+    private final onItemClickListener listener;
 
-    public ImagesAdapter(List<DoggieEntity> imagesGrid) {
+    public ImagesAdapter(List<DoggieEntity> imagesGrid, onItemClickListener listener) {
         this.imagesGrid = imagesGrid;
+        this.listener = listener;
     }
 
 
@@ -36,7 +38,7 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.Holder> {
 
     @Override
     public void onBindViewHolder(@NonNull ImagesAdapter.Holder holder, int position) {
-        holder.bind(position);
+        holder.bind(position, listener);
     }
 
     @Override
@@ -53,7 +55,7 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.Holder> {
             this.binding = binding;
         }
 
-        void bind(int position) {
+        void bind(int position, onItemClickListener listener) {
 
             Glide.with(itemView.getContext())
                     .load(imagesGrid.get(position).getLink())
@@ -62,6 +64,13 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.Holder> {
                     .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                     .placeholder(R.drawable.ic_launcher_foreground)
                     .into(binding.ivAnimal);
+
+            itemView.setOnClickListener(v -> listener.onItemClick(imagesGrid.get(position)));
         }
+
+    }
+
+    public interface onItemClickListener {
+        void onItemClick(DoggieEntity item);
     }
 }
