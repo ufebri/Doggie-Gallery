@@ -4,14 +4,14 @@
     android:layout_height="match_parent">
 
     <ProgressBar
-        android:id="@+id/pb_home"
+        android:id="@+id/pb_categories"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_centerHorizontal="true" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rec_animal"
+        android:id="@+id/rv_categories"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </RelativeLayout>

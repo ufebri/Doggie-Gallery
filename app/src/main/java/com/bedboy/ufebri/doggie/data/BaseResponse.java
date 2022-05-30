@@ -1,15 +1,11 @@
-package com.bedboy.ufebri.retrofitimages.entity;
+package com.bedboy.ufebri.doggie.data;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-/**
- * Created by user on 5/7/18.
- */
-
-public class Images {
+public class BaseResponse {
 
     @SerializedName("status")
     @Expose

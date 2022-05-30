@@ -2,4 +2,11 @@
     <string name="app_name">Retrofit Images</string>
     <string name="title_home">home</string>
     <string name="favorite">Favorite</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="download">Download</string>
+    <string name="set_as_wallpaper">Set As Wallpaper</string>
+    <string name="share">Share</string>
+    <string name="copy">Copy</string>
+    <string name="copyright">Image Provided By Dog CEO</string>
 </resources>
