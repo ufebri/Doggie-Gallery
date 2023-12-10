@@ -3,7 +3,6 @@ package com.bedboy.ufebri.doggie.ui.categories;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.bedboy.ufebri.doggie.config.Constant;
 import com.bedboy.ufebri.doggie.data.DoggieRepository;
 import com.bedboy.ufebri.doggie.data.source.local.entity.DoggieEntity;
 import com.bedboy.ufebri.doggie.vo.Resource;

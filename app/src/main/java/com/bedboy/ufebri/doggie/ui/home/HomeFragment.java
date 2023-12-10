@@ -13,9 +13,9 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import com.bedboy.ufebri.doggie.ui.ImagesAdapter;
 import com.bedboy.ufebri.doggie.data.source.local.entity.DoggieEntity;
 import com.bedboy.ufebri.doggie.databinding.FragmentHomeBinding;
+import com.bedboy.ufebri.doggie.ui.ImagesAdapter;
 import com.bedboy.ufebri.doggie.ui.detail.DetailActivity;
 import com.bedboy.ufebri.doggie.viewmodel.ViewModelFactory;
 

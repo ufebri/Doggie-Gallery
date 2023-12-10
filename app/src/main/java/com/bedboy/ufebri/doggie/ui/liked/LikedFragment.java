@@ -2,6 +2,10 @@ package com.bedboy.ufebri.doggie.ui.liked;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -9,14 +13,9 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
-
-import com.bedboy.ufebri.doggie.ui.ImagesAdapter;
 import com.bedboy.ufebri.doggie.data.source.local.entity.DoggieEntity;
 import com.bedboy.ufebri.doggie.databinding.FragmentLikedBinding;
+import com.bedboy.ufebri.doggie.ui.ImagesAdapter;
 import com.bedboy.ufebri.doggie.ui.detail.DetailActivity;
 import com.bedboy.ufebri.doggie.viewmodel.ViewModelFactory;
 
