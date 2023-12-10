@@ -1,58 +1,94 @@
 package com.bedboy.ufebri.doggie.ui;
 
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.bedboy.ufebri.doggie.R;
-import com.bedboy.ufebri.doggie.ui.home.HomeParentFragment;
-import com.bedboy.ufebri.doggie.ui.maps.MapsFragment;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.bedboy.ufebri.doggie.ui.categories.CategoriesFragment;
+import com.bedboy.ufebri.doggie.ui.home.HomeFragment;
+import com.bedboy.ufebri.doggie.ui.liked.LikedFragment;
+import com.bedboy.ufebri.doggie.ui.popular.PopularFragment;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 
-public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity {
 
-    private HomeParentFragment homeFragment;
-    private MapsFragment mapsFragment;
+    private TabLayout tabLayout;
+    private ViewPager2 viewPager;
+
+    private HomeFragment homeFragment;
+    private PopularFragment popularFragment;
+    private LikedFragment likedFragment;
+    private CategoriesFragment categoriesFragment;
+
+    private final String[] titles = new String[]{"For You", "Most Popular", "Most Liked", "Categories"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        homeFragment = new HomeParentFragment();
-        mapsFragment = new MapsFragment();
+        tabLayout = findViewById(R.id.tl_main);
+        viewPager = findViewById(R.id.vp_home);
 
-        setupBottomNavigationBar();
+        homeFragment = new HomeFragment();
+        popularFragment = new PopularFragment();
+        likedFragment = new LikedFragment();
+        categoriesFragment = new CategoriesFragment();
+
+        viewPager.setAdapter(new ViewPagerAdapter(this));
+        new TabLayoutMediator(tabLayout, viewPager,
+                ((tab, position) -> tab.setText(titles[position]))).attach();
+
+        populateTabLayout();
     }
 
-    private void setupBottomNavigationBar() {
-        BottomNavigationView bottomNavigationView = findViewById(R.id.navigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(this);
-        bottomNavigationView.setSelectedItemId(R.id.navigation_home);
+    private void populateTabLayout() {
+
+        //Setup Margin TabLayout
+        int betweenSpace = 5;
+        ViewGroup slidingTabStrip = (ViewGroup) tabLayout.getChildAt(0);
+
+        for (int i = 0; i < slidingTabStrip.getChildCount() - 1; i++) {
+            View v = slidingTabStrip.getChildAt(i);
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            params.rightMargin = betweenSpace;
+        }
     }
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.navigation_home:
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .addToBackStack(null)
-                        .replace(R.id.content, homeFragment)
-                        .commit();
-                return true;
-            case R.id.navigation_pets:
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .addToBackStack(null)
-                        .replace(R.id.content, mapsFragment)
-                        .commit();
-                return true;
-            default:
-                return false;
+    private class ViewPagerAdapter extends FragmentStateAdapter {
+
+        public ViewPagerAdapter(@NonNull MainActivity mainActivity) {
+            super(mainActivity);
+        }
+
+        @NonNull
+        @Override
+        public Fragment createFragment(int position) {
+            switch (position) {
+                case 0:
+                    return homeFragment;
+                case 1:
+                    return popularFragment;
+                case 2:
+                    return likedFragment;
+                case 3:
+                    return categoriesFragment;
+            }
+            return new HomeFragment();
+        }
+
+        @Override
+        public int getItemCount() {
+            return titles.length;
         }
     }
 

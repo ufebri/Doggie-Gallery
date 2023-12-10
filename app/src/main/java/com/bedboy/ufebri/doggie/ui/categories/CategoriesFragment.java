@@ -1,24 +1,19 @@
 package com.bedboy.ufebri.doggie.ui.categories;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
-
-import com.bedboy.ufebri.doggie.R;
 import com.bedboy.ufebri.doggie.data.source.local.entity.DoggieEntity;
 import com.bedboy.ufebri.doggie.databinding.FragmentCategoriesBinding;
-import com.bedboy.ufebri.doggie.ui.ImagesAdapter;
-import com.bedboy.ufebri.doggie.ui.popular.PopularViewModel;
 import com.bedboy.ufebri.doggie.viewmodel.ViewModelFactory;
 
 import java.util.ArrayList;
