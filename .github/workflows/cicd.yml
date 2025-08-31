@@ -73,6 +73,14 @@ jobs:
       - name: Build APK
         run: ./gradlew assembleRelease
 
+      - name: Locate release APK
+        run: |
+          echo "Listing APK outputs:" && ls -R app/build/outputs/apk/ || true
+          APK=$(ls -1 app/build/outputs/apk/release/*release*.apk | head -n1)
+          if [ -z "$APK" ]; then echo "No release APK found" && exit 1; fi
+          echo "Found APK: $APK"
+          echo "APK_PATH=$APK" >> $GITHUB_ENV
+
       - name: Generate Release Notes from PR commits
         uses: actions/github-script@v6
         with:
@@ -114,7 +122,7 @@ jobs:
           appId: ${{ secrets.FIREBASE_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           groups: internal-tester
-          file: app/build/outputs/apk/release/app-release.apk
+          file: ${{ env.APK_PATH }}
           releaseNotesFile: release-notes.txt
 
   code-coverage:
