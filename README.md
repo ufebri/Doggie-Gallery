@@ -1,5 +1,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/ufebri/Doggie-Gallery/badge.svg?branch=master)](https://coveralls.io/github/ufebri/Doggie-Gallery?branch=master)[![Join Firebase Testing](https://img.shields.io/badge/Firebase-Join%20Testing-orange?logo=firebase)](https://appdistribution.firebase.dev/i/cc70d0566a3b66d3)
 
+<img src="./assets/cover.png" width="1280" height="640" alt="cover" />
+
 # Doggy Gallery
 Doggie-Gallery is an Android application designed to showcase a delightful gallery of dog images. It allows users to browse through pictures of various dog breeds and save their favorite ones.
 
