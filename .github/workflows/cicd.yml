@@ -150,12 +150,15 @@ jobs:
             ${{ runner.os }}-gradle
 
       - name: Run tests and generate Jacoco report
-        run: ./gradlew clean test jacocoTestReport
+        run: ./gradlew clean testDebugUnitTest jacocoTestReport
 
       - name: Check if coverage report exists
         run: ls -lh app/build/reports/jacoco/jacocoTestReport/
 
-      - name: Upload Coverage to Coveralls
-        env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-        run: ./gradlew coveralls
+      - name: Upload coverage to Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-jacoco: app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml
+          # repo private? uncomment below
+          # repo-token: ${{ secrets.COVERALLS_REPO_TOKEN }}
