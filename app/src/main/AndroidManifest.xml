@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.bedboy.ufebri.doggie">
+    package="com.raylabs.doggie.doggie">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -16,7 +16,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".SplashActivity"
+            android:name="com.raylabs.doggie.SplashActivity"
             android:exported="true"
             android:noHistory="true">
             <intent-filter>
@@ -27,10 +27,10 @@
         </activity>
 
         <activity
-            android:name=".ui.detail.DetailActivity"
+            android:name="com.raylabs.doggie.ui.detail.DetailActivity"
             android:exported="true" />
         <activity
-            android:name=".ui.MainActivity"
+            android:name="com.raylabs.doggie.ui.MainActivity"
             android:exported="true" />
     </application>
 
