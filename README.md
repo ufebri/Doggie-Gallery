@@ -1,4 +1,4 @@
-<a href='https://play.google.com/store/apps/details?id=com.bedboy.ufebri.doggie&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' height="100"/></a>
+[![Coverage Status](https://coveralls.io/repos/github/ufebri/Doggie-Gallery/badge.svg?branch=master)](https://coveralls.io/github/ufebri/Doggie-Gallery?branch=master)[![Join Firebase Testing](https://img.shields.io/badge/Firebase-Join%20Testing-orange?logo=firebase)](https://appdistribution.firebase.dev/i/cc70d0566a3b66d3)
 
 # Doggy Gallery
 Doggie-Gallery is an Android application designed to showcase a delightful gallery of dog images. It allows users to browse through pictures of various dog breeds and save their favorite ones.
