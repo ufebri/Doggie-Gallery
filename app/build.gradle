@@ -1,15 +1,42 @@
-apply plugin: 'com.android.application'
+plugins {
+    id 'com.android.application'
+    id 'jacoco'
+    id 'com.github.kt3k.coveralls' version '2.12.2'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
+}
+
+def apikeyPropertiesFile = rootProject.file("config.properties")
+def apikeyProperties = new Properties()
+
+if (apikeyPropertiesFile.exists()) {
+    apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
+}
+
+def versionPropsFile = rootProject.file('version.properties')
+def versionProps = new Properties()
+versionProps.load(new FileInputStream(versionPropsFile))
 
 android {
     compileSdkVersion 34
     defaultConfig {
-        applicationId "com.bedboy.ufebri.doggie"
+        applicationId "com.raylabs.doggie"
         minSdkVersion 21
         targetSdkVersion 34
-        versionCode 1
-        versionName "1.0"
+        versionCode versionProps['VERSION_CODE'].toInteger()
+        versionName versionProps['VERSION_NAME']
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    signingConfigs {
+        release {
+            storeFile file(apikeyProperties["MYAPP_RELEASE_KEYSTORE_FILE"])
+            storePassword apikeyProperties["MYAPP_RELEASE_KEYSTORE_PASSWORD"]
+            keyAlias apikeyProperties["MYAPP_RELEASE_KEY_ALIAS"]
+            keyPassword apikeyProperties["MYAPP_RELEASE_KEY_PASSWORD"]
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled true
@@ -25,9 +52,51 @@ android {
         sourceCompatibility 1.8
         targetCompatibility 1.8
     }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+            returnDefaultValues = true
+        }
+    }
 }
 
+tasks.register("jacocoTestReport", JacocoReport) {
+    dependsOn "testDebugUnitTest"
 
+    reports {
+        xml.required = true   // Coveralls butuh XML
+        html.required = true
+    }
+
+    // kelas hasil compile Java (Debug)
+    def debugTree = fileTree(
+            dir: "$buildDir/intermediates/javac/debug",
+            exclude: [
+                    '**/R.class', '**/R$*.class',
+                    '**/BuildConfig.*',
+                    '**/*$ViewInjector*.*',
+                    '**/*$ViewBinder*.*',
+                    '**/androidx/**/*.*'
+            ]
+    )
+
+    sourceDirectories.setFrom files("src/main/java")
+    classDirectories.setFrom files(debugTree)
+
+    // lokasi file eksekusi coverage
+    executionData.setFrom files(
+            "$buildDir/jacoco/testDebugUnitTest.exec",
+            "$buildDir/outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec"
+    ).filter { it.exists() }
+}
+
+jacoco { toolVersion = "0.8.11" }
+
+coveralls {
+    // sesuaikan ke lokasi report XML yang dihasilkan task di bawah
+    jacocoReportPath = "${projectDir}/app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml"
+}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -55,4 +124,8 @@ dependencies {
     //room
     implementation "androidx.room:room-runtime:2.6.1"
     annotationProcessor "androidx.room:room-compiler:2.6.1"
+
+    implementation platform('com.google.firebase:firebase-bom:33.2.0')
+    implementation 'com.google.firebase:firebase-analytics'     // opsional
+    implementation 'com.google.firebase:firebase-crashlytics'   // opsional
 }
