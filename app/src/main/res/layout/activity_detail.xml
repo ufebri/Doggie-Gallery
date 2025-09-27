@@ -10,8 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        tools:ignore="ContentDescription"
         android:scaleType="centerCrop"
+        tools:ignore="ContentDescription"
         tools:layout_height="600dp"
         tools:src="@mipmap/ic_launcher"
         tools:visibility="visible" />
@@ -20,5 +20,12 @@
         android:id="@+id/ll_detail_image"
         layout="@layout/item_detail_image"
         tools:visibility="visible" />
+
+    <FrameLayout
+        android:id="@+id/adView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="16dp" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,6 +1,7 @@
 package com.raylabs.doggie.network;
 
-import com.raylabs.doggie.doggie.BuildConfig;
+
+import com.raylabs.doggie.BuildConfig;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;

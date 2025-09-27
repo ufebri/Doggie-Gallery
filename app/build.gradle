@@ -17,11 +17,12 @@ def versionProps = new Properties()
 versionProps.load(new FileInputStream(versionPropsFile))
 
 android {
-    compileSdkVersion 34
+    namespace 'com.raylabs.doggie'
+    compileSdkVersion 36
     defaultConfig {
         applicationId "com.raylabs.doggie"
-        minSdkVersion 21
-        targetSdkVersion 34
+        minSdkVersion 23
+        targetSdkVersion 36
         versionCode versionProps['VERSION_CODE'].toInteger()
         versionName versionProps['VERSION_NAME']
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -38,15 +39,25 @@ android {
 
     buildTypes {
         release {
-            debuggable true
+            debuggable false
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+            resValue("string", "ads_application_id", apikeyProperties["ADMOB_ID_PROD"])
+            resValue("string", "admob_banner_id", apikeyProperties["ADMOB_ID_BANNER_PROD"])
+        }
+
+        debug {
+            debuggable true
+            minifyEnabled false
+            resValue("string", "ads_application_id", apikeyProperties["ADMOB_ID_DEV"])
+            resValue("string", "admob_banner_id", apikeyProperties["ADMOB_ID_BANNER_DEV"])
         }
     }
 
-    viewBinding {
-        enabled = true
+    buildFeatures {
+        viewBinding = true
+        buildConfig = true
     }
 
     compileOptions {
@@ -66,43 +77,70 @@ tasks.register("jacocoTestReport", JacocoReport) {
     dependsOn "testDebugUnitTest"
 
     reports {
-        xml.required = true   // Coveralls butuh XML
+        xml.required = true
         html.required = true
+        csv.required = false
     }
 
-    // kelas hasil compile Java (Debug)
-    def debugTree = fileTree(
-            dir: "$buildDir/intermediates/javac/debug",
-            exclude: [
-                    '**/R.class', '**/R$*.class',
-                    '**/BuildConfig.*',
-                    '**/*$ViewInjector*.*',
-                    '**/*$ViewBinder*.*',
-                    '**/androidx/**/*.*'
-            ]
-    )
+    // === Sumber kode (Java & Kotlin) ===
+    sourceDirectories.setFrom files("src/main/java", "src/main/kotlin")
 
-    sourceDirectories.setFrom files("src/main/java")
-    classDirectories.setFrom files(debugTree)
+    // === Direktori class yang SUDAH works di proyekmu + fallback ===
+    def candidateDirs = [
+            layout.buildDirectory.dir("intermediates/javac/debug").get().asFile,
+            layout.buildDirectory.dir("intermediates/javac/debug/classes").get().asFile,
+            layout.buildDirectory.dir("tmp/kotlin-classes/debug").get().asFile
+    ].findAll { it.exists() }
 
-    // lokasi file eksekusi coverage
+    // Pola exclude: generated + UI layer
+    def excludes = [
+            // generated/boilerplate
+            '**/R.class', '**/R$*.class',
+            '**/BuildConfig.*',
+            '**/Manifest*.*',
+            '**/*$ViewInjector*.*',
+            '**/*$ViewBinder*.*',
+            '**/androidx/**/*.*',
+
+            // UI yang mau kamu singkirkan dari coverage
+            '**/*Activity.*', '**/*Activity$*.*',
+            '**/*Fragment.*', '**/*Fragment$*.*',
+            '**/*Adapter.*',  '**/*Adapter$*.*',
+            '**/com/raylabs/doggie/ui/**',
+            '**/com/raylabs/doggie/databinding/**',
+            '**/com/raylabs/doggie/data/source/local/**'
+    ]
+
+    def classTrees = candidateDirs.collect { dir ->
+        fileTree(dir: dir, exclude: excludes)
+    }
+    classDirectories.setFrom files(classTrees)
+
+    // === File eksekusi coverage ===
     executionData.setFrom files(
-            "$buildDir/jacoco/testDebugUnitTest.exec",
-            "$buildDir/outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec"
+            layout.buildDirectory.file("jacoco/testDebugUnitTest.exec").get().asFile,
+            layout.buildDirectory.file("outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec").get().asFile
     ).filter { it.exists() }
+
+    // Debug log
+    doFirst {
+        def total = 0
+        classTrees.each { ft -> total += ft.files.size() }
+        println "[jacoco] class files included = $total"
+    }
 }
 
 jacoco { toolVersion = "0.8.11" }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.3.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
 
     //Testing
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'androidx.arch.core:core-testing:2.2.0'
-    testImplementation 'org.mockito:mockito-core:5.12.0'
+    testImplementation 'org.mockito:mockito-core:5.20.0'
     testImplementation 'org.mockito:mockito-inline:5.2.0'
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
@@ -128,7 +166,9 @@ dependencies {
     implementation "androidx.room:room-runtime:2.6.1"
     annotationProcessor "androidx.room:room-compiler:2.6.1"
 
-    implementation platform('com.google.firebase:firebase-bom:33.2.0')
+    implementation platform('com.google.firebase:firebase-bom:34.3.0')
     implementation 'com.google.firebase:firebase-analytics'     // opsional
     implementation 'com.google.firebase:firebase-crashlytics'   // opsional
+
+    implementation 'com.google.android.gms:play-services-ads:24.6.0'
 }

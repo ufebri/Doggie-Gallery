@@ -13,7 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.raylabs.doggie.data.source.local.entity.DoggieEntity;
-import com.raylabs.doggie.doggie.databinding.FragmentCategoriesBinding;
+import com.raylabs.doggie.databinding.FragmentCategoriesBinding;
 import com.raylabs.doggie.viewmodel.ViewModelFactory;
 
 import java.util.ArrayList;

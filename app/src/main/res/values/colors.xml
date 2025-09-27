@@ -8,4 +8,5 @@
     <color name="colorBg">#202125</color>
     <color name="colorText">#A1A1A1</color>
     <color name="colorBackground">#FFFFFF</color>
+    <color name="colorStatusBar">#8F03A9F4</color>
 </resources>

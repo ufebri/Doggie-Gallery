@@ -1,5 +1,6 @@
 package com.raylabs.doggie;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
@@ -11,9 +12,10 @@ import android.view.WindowInsetsController;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.motion.widget.MotionLayout;
 
-import com.raylabs.doggie.doggie.databinding.ActivitySplashBinding;
+import com.raylabs.doggie.databinding.ActivitySplashBinding;
 import com.raylabs.doggie.ui.MainActivity;
 
+@SuppressLint("CustomSplashScreen")
 public class SplashActivity extends AppCompatActivity {
 
     private ActivitySplashBinding splashBinding;
@@ -37,13 +39,16 @@ public class SplashActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onTransitionChange(MotionLayout p0, int p1, int p2, float p3) {}
+            public void onTransitionChange(MotionLayout p0, int p1, int p2, float p3) {
+            }
 
             @Override
-            public void onTransitionStarted(MotionLayout p0, int p1, int p2) {}
+            public void onTransitionStarted(MotionLayout p0, int p1, int p2) {
+            }
 
             @Override
-            public void onTransitionTrigger(MotionLayout p0, int p1, boolean p2, float p3) {}
+            public void onTransitionTrigger(MotionLayout p0, int p1, boolean p2, float p3) {
+            }
         });
     }
 
