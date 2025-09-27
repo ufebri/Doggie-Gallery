@@ -6,12 +6,12 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.raylabs.doggie.doggie.R;
-import com.raylabs.doggie.data.source.local.entity.DoggieEntity;
-import com.raylabs.doggie.doggie.databinding.ItemImageBinding;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.Target;
+import com.raylabs.doggie.R;
+import com.raylabs.doggie.data.source.local.entity.DoggieEntity;
+import com.raylabs.doggie.databinding.ItemImageBinding;
 
 import java.util.List;
 

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="tab_title_main">
+        <item>@string/tab_title_categories_for_you</item>
+        <item>@string/tab_title_categories_most_popular</item>
+        <item>@string/tab_title_categories_most_liked</item>
+        <item>@string/tab_title_categories_random</item>
+    </string-array>
+</resources>

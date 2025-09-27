@@ -8,7 +8,9 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:windowBackground">@color/colorBackground</item>
+        <item name="android:statusBarColor">@color/colorStatusBar</item>
+        <item name="statusBarBackground">@color/colorStatusBar</item>
+        <item name="android:windowLightStatusBar">true</item> <!-- Make status bar icons dark -->
     </style>
 
     <!-- Splash Screen -->

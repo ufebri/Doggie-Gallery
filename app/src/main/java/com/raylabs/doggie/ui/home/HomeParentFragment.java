@@ -10,7 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.raylabs.doggie.doggie.databinding.FragmentHomeParentBinding;
+import com.raylabs.doggie.databinding.FragmentHomeParentBinding;
 import com.raylabs.doggie.ui.categories.CategoriesFragment;
 import com.raylabs.doggie.ui.liked.LikedFragment;
 import com.raylabs.doggie.ui.popular.PopularFragment;

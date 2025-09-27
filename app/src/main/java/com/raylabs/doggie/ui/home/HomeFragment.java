@@ -14,7 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.raylabs.doggie.data.source.local.entity.DoggieEntity;
-import com.raylabs.doggie.doggie.databinding.FragmentHomeBinding;
+import com.raylabs.doggie.databinding.FragmentHomeBinding;
 import com.raylabs.doggie.ui.ImagesAdapter;
 import com.raylabs.doggie.ui.detail.DetailActivity;
 import com.raylabs.doggie.viewmodel.ViewModelFactory;

@@ -9,8 +9,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.raylabs.doggie.doggie.databinding.ActivityDetailBinding;
-import com.raylabs.doggie.doggie.databinding.ItemDetailImageBinding;
+import com.raylabs.doggie.databinding.ActivityDetailBinding;
+import com.raylabs.doggie.databinding.ItemDetailImageBinding;
+import com.raylabs.doggie.utils.AdsHelper;
 import com.raylabs.doggie.utils.GeneralHelper;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -32,6 +33,9 @@ public class DetailActivity extends AppCompatActivity {
         itemSheet = binding.llDetailImage;
         View view = binding.getRoot();
         setContentView(view);
+
+        AdsHelper.init(this);
+        AdsHelper.loadBanner(binding.adView);
 
         //Handle Intent
         link = getIntent().getStringExtra("link");

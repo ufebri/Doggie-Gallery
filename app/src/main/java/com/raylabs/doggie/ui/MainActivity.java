@@ -3,48 +3,59 @@ package com.raylabs.doggie.ui;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.raylabs.doggie.doggie.R;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
+import com.raylabs.doggie.R;
 import com.raylabs.doggie.ui.categories.CategoriesFragment;
 import com.raylabs.doggie.ui.home.HomeFragment;
 import com.raylabs.doggie.ui.liked.LikedFragment;
 import com.raylabs.doggie.ui.popular.PopularFragment;
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
+import com.raylabs.doggie.utils.AdsHelper;
+import com.raylabs.doggie.utils.ViewPagerAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private TabLayout tabLayout;
-    private ViewPager2 viewPager;
-
-    private HomeFragment homeFragment;
-    private PopularFragment popularFragment;
-    private LikedFragment likedFragment;
-    private CategoriesFragment categoriesFragment;
-
-    private final String[] titles = new String[]{"For You", "Most Popular", "Most Liked", "Categories"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
         tabLayout = findViewById(R.id.tl_main);
-        viewPager = findViewById(R.id.vp_home);
+        ViewPager2 viewPager = findViewById(R.id.vp_home);
+        FrameLayout adContainer = findViewById(R.id.adView); // Assign to FrameLayout
 
-        homeFragment = new HomeFragment();
-        popularFragment = new PopularFragment();
-        likedFragment = new LikedFragment();
-        categoriesFragment = new CategoriesFragment();
+        AdsHelper.init(this);
+        AdsHelper.loadBanner(adContainer); // Pass FrameLayout to loadBanner
 
-        viewPager.setAdapter(new ViewPagerAdapter(this));
+        List<Fragment> fragments = new ArrayList<>();
+        fragments.add(new HomeFragment());
+        fragments.add(new PopularFragment());
+        fragments.add(new LikedFragment());
+        fragments.add(new CategoriesFragment());
+
+        viewPager.setAdapter(new ViewPagerAdapter(this, fragments));
+        String[] titles = getResources().getStringArray(R.array.tab_title_main);
         new TabLayoutMediator(tabLayout, viewPager,
                 ((tab, position) -> tab.setText(titles[position]))).attach();
 
@@ -63,34 +74,5 @@ public class MainActivity extends AppCompatActivity {
             params.rightMargin = betweenSpace;
         }
     }
-
-    private class ViewPagerAdapter extends FragmentStateAdapter {
-
-        public ViewPagerAdapter(@NonNull MainActivity mainActivity) {
-            super(mainActivity);
-        }
-
-        @NonNull
-        @Override
-        public Fragment createFragment(int position) {
-            switch (position) {
-                case 0:
-                    return homeFragment;
-                case 1:
-                    return popularFragment;
-                case 2:
-                    return likedFragment;
-                case 3:
-                    return categoriesFragment;
-            }
-            return new HomeFragment();
-        }
-
-        @Override
-        public int getItemCount() {
-            return titles.length;
-        }
-    }
-
 
 }
