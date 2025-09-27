@@ -31,6 +31,11 @@ jobs:
           echo "MYAPP_RELEASE_KEYSTORE_PASSWORD=${{ secrets.MYAPP_RELEASE_KEYSTORE_PASSWORD }}" >> config.properties
           echo "MYAPP_RELEASE_KEY_ALIAS=${{ secrets.MYAPP_RELEASE_KEY_ALIAS }}" >> config.properties
           echo "MYAPP_RELEASE_KEY_PASSWORD=${{ secrets.MYAPP_RELEASE_KEY_PASSWORD }}" >> config.properties
+          echo "ADMOB_ID_PROD=${{ secrets.ADMOB_ID_PROD }}" >> config.properties
+          echo "ADMOB_ID_BANNER_PROD=${{ secrets.ADMOB_ID_BANNER_PROD }}" >> config.properties
+          echo "ADMOB_ID_DEV=${{ secrets.ADMOB_ID_DEV }}" >> config.properties
+          echo "ADMOB_ID_BANNER_DEV=${{ secrets.ADMOB_ID_BANNER_DEV }}" >> config.properties
+          
 
       # Step 4: Upload environment files as artifact
       - name: Upload environment files
@@ -61,11 +66,11 @@ jobs:
         with:
           name: env-files
 
-      - name: Set up JDK 11
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
 
       - name: Grant execute permission for Gradlew
         run: chmod +x ./gradlew
@@ -140,11 +145,11 @@ jobs:
         with:
           name: env-files
 
-      - name: Set up JDK 11
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
 
       - name: Grant execute permission for Gradlew
         run: chmod +x ./gradlew

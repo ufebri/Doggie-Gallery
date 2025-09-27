@@ -1,6 +1,6 @@
 package com.raylabs.doggie.ui.popular;
 
-import android.content.Intent;
+// import android.content.Intent; // Dihapus
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +16,8 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.raylabs.doggie.data.source.local.entity.DoggieEntity;
 import com.raylabs.doggie.databinding.FragmentPopularBinding;
 import com.raylabs.doggie.ui.ImagesAdapter;
-import com.raylabs.doggie.ui.detail.DetailActivity;
+// import com.raylabs.doggie.ui.detail.DetailActivity; // Dihapus
+import com.raylabs.doggie.ui.detail.DetailBottomSheetFragment; // Ditambahkan
 import com.raylabs.doggie.viewmodel.ViewModelFactory;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class PopularFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = FragmentPopularBinding.inflate(inflater);
+        binding = FragmentPopularBinding.inflate(inflater, container, false); // container dan attachToRoot ditambahkan
         return binding.getRoot();
     }
 
@@ -57,10 +58,16 @@ public class PopularFragment extends Fragment {
                                     break;
                                 case SUCCESS:
                                     if (result.data != null) {
+                                        imagesGrid.clear(); // Bersihkan list sebelum menambahkan data baru
                                         imagesGrid.addAll(result.data);
                                         binding.rvPopular.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
                                         binding.rvPopular.setHasFixedSize(true);
-                                        adapter = new ImagesAdapter(imagesGrid, item -> startActivity(new Intent(getActivity(), DetailActivity.class).putExtra("link", item.getLink())));
+                                        // Mengubah pemanggilan DetailActivity menjadi DetailBottomSheetFragment
+                                        adapter = new ImagesAdapter(imagesGrid, item -> {
+                                            if (item.getLink() != null && !item.getLink().isEmpty()) {
+                                                DetailBottomSheetFragment.newInstance(item.getLink()).show(getParentFragmentManager(), "DetailBottomSheetFragmentTag");
+                                            }
+                                        });
                                         binding.rvPopular.setAdapter(adapter);
 
                                         binding.pbPopular.setVisibility(View.GONE);
@@ -76,5 +83,11 @@ public class PopularFragment extends Fragment {
                         }
                     });
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null; // Membersihkan view binding
     }
 }

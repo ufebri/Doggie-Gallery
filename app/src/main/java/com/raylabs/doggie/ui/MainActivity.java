@@ -1,7 +1,6 @@
 package com.raylabs.doggie.ui;
 
 import android.os.Bundle;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
@@ -21,6 +20,9 @@ import com.raylabs.doggie.ui.liked.LikedFragment;
 import com.raylabs.doggie.ui.popular.PopularFragment;
 import com.raylabs.doggie.utils.AdsHelper;
 import com.raylabs.doggie.utils.ViewPagerAdapter;
+import com.raylabs.doggie.utils.tab.AndroidDividerController;
+import com.raylabs.doggie.utils.tab.TabDividerDelegate;
+import com.raylabs.doggie.utils.tab.TabTitleDelegate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         FrameLayout adContainer = findViewById(R.id.adView); // Assign to FrameLayout
 
         AdsHelper.init(this);
-        AdsHelper.loadBanner(adContainer); // Pass FrameLayout to loadBanner
+        AdsHelper.loadBanner(this, adContainer); // Pass FrameLayout to loadBanner
 
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(new HomeFragment());
@@ -55,24 +57,17 @@ public class MainActivity extends AppCompatActivity {
         fragments.add(new CategoriesFragment());
 
         viewPager.setAdapter(new ViewPagerAdapter(this, fragments));
-        String[] titles = getResources().getStringArray(R.array.tab_title_main);
-        new TabLayoutMediator(tabLayout, viewPager,
-                ((tab, position) -> tab.setText(titles[position]))).attach();
+        String[] titlesArray = getResources().getStringArray(R.array.tab_title_main);
+        TabTitleDelegate titleDelegate = new TabTitleDelegate(titlesArray);
+
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> tab.setText(titleDelegate.requireAt(position))).attach();
 
         populateTabLayout();
     }
 
     private void populateTabLayout() {
-
-        //Setup Margin TabLayout
-        int betweenSpace = 5;
         ViewGroup slidingTabStrip = (ViewGroup) tabLayout.getChildAt(0);
-
-        for (int i = 0; i < slidingTabStrip.getChildCount() - 1; i++) {
-            View v = slidingTabStrip.getChildAt(i);
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
-            params.rightMargin = betweenSpace;
-        }
+        TabDividerDelegate.apply(new AndroidDividerController(slidingTabStrip));
     }
 
 }
