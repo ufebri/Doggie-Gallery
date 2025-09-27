@@ -5,7 +5,7 @@
     <!-- radius should be half of the desired TabLayout height -->
     <corners android:radius="15dp" />
 
-    <!-- color of the selected tab -->
-    <solid android:color="@android:color/transparent" />
+    <!-- color of the unselected tab - changed from transparent to white -->
+    <solid android:color="@android:color/white" />
 
 </shape>

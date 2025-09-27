@@ -14,4 +14,6 @@
     <string name="tab_title_categories_most_popular">Most Popular</string>
     <string name="tab_title_categories_most_liked">Most Liked</string>
     <string name="tab_title_categories_random">Random</string>
+    <string name="error_image_link_missing">Link of image Error</string>
+    <string name="content_desc_detail_image">Image of content</string>
 </resources>

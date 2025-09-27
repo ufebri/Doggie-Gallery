@@ -1,6 +1,6 @@
 package com.raylabs.doggie.ui.liked;
 
-import android.content.Intent;
+// import android.content.Intent; // Dihapus
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +16,8 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.raylabs.doggie.data.source.local.entity.DoggieEntity;
 import com.raylabs.doggie.databinding.FragmentLikedBinding;
 import com.raylabs.doggie.ui.ImagesAdapter;
-import com.raylabs.doggie.ui.detail.DetailActivity;
+// import com.raylabs.doggie.ui.detail.DetailActivity; // Dihapus
+import com.raylabs.doggie.ui.detail.DetailBottomSheetFragment; // Ditambahkan
 import com.raylabs.doggie.viewmodel.ViewModelFactory;
 
 import java.util.ArrayList;
@@ -29,7 +30,6 @@ public class LikedFragment extends Fragment {
     private LikedViewModel viewModel;
     private FragmentLikedBinding fragmentLikedBinding;
 
-
     public LikedFragment() {
         // Required empty public constructor
     }
@@ -37,7 +37,8 @@ public class LikedFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        fragmentLikedBinding = FragmentLikedBinding.inflate(inflater);
+        // Inflate the layout for this fragment
+        fragmentLikedBinding = FragmentLikedBinding.inflate(inflater, container, false); // Ditambahkan container dan false
         return fragmentLikedBinding.getRoot();
     }
 
@@ -51,31 +52,43 @@ public class LikedFragment extends Fragment {
             viewModel.getImage().observe(getViewLifecycleOwner(),
                     result -> {
                         if (result != null) {
-                            switch (result.status) {
-                                case LOADING:
-                                    fragmentLikedBinding.pbLiked.setVisibility(View.VISIBLE);
+                            // Karena data liked bisa berubah (tambah/hapus), selalu perbarui list dari awal
+                            imagesGrid.clear(); 
+                            if (result.status == com.raylabs.doggie.vo.Status.LOADING) {
+                                fragmentLikedBinding.pbLiked.setVisibility(View.VISIBLE);
+                                fragmentLikedBinding.rvLiked.setVisibility(View.GONE);
+                            } else if (result.status == com.raylabs.doggie.vo.Status.SUCCESS) {
+                                if (result.data != null && !result.data.isEmpty()) {
+                                    imagesGrid.addAll(result.data);
+                                    fragmentLikedBinding.rvLiked.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+                                    fragmentLikedBinding.rvLiked.setHasFixedSize(true);
+                                    adapter = new ImagesAdapter(imagesGrid, item -> {
+                                        if (item.getLink() != null && !item.getLink().isEmpty()) {
+                                            DetailBottomSheetFragment.newInstance(item.getLink()).show(getParentFragmentManager(), "DetailBottomSheetFragmentTag");
+                                        }
+                                    });
+                                    fragmentLikedBinding.rvLiked.setAdapter(adapter);
+                                    fragmentLikedBinding.rvLiked.setVisibility(View.VISIBLE);
+                                } else {
+                                    // Tampilkan pesan jika tidak ada gambar yang disukai
                                     fragmentLikedBinding.rvLiked.setVisibility(View.GONE);
-                                    break;
-                                case SUCCESS:
-                                    if (result.data != null) {
-                                        imagesGrid.addAll(result.data);
-                                        fragmentLikedBinding.rvLiked.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-                                        fragmentLikedBinding.rvLiked.setHasFixedSize(true);
-                                        adapter = new ImagesAdapter(imagesGrid, item -> startActivity(new Intent(getActivity(), DetailActivity.class).putExtra("link", item.getLink())));
-                                        fragmentLikedBinding.rvLiked.setAdapter(adapter);
-
-                                        fragmentLikedBinding.pbLiked.setVisibility(View.GONE);
-                                        fragmentLikedBinding.rvLiked.setVisibility(View.VISIBLE);
-                                    }
-                                    break;
-                                case ERROR:
-                                    fragmentLikedBinding.pbLiked.setVisibility(View.GONE);
-                                    fragmentLikedBinding.rvLiked.setVisibility(View.GONE);
-                                    Toast.makeText(getContext(), "Failed Get Image", Toast.LENGTH_SHORT).show();
-                                    break;
+                                    // Anda bisa menambahkan TextView untuk pesan "No liked images yet."
+                                    Toast.makeText(getContext(), "No liked images yet.", Toast.LENGTH_SHORT).show(); 
+                                }
+                                fragmentLikedBinding.pbLiked.setVisibility(View.GONE);
+                            } else if (result.status == com.raylabs.doggie.vo.Status.ERROR) {
+                                fragmentLikedBinding.pbLiked.setVisibility(View.GONE);
+                                fragmentLikedBinding.rvLiked.setVisibility(View.GONE);
+                                Toast.makeText(getContext(), "Failed to load liked images.", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        fragmentLikedBinding = null; // Membersihkan view binding
     }
 }
