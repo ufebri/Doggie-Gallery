@@ -1,6 +1,7 @@
 package com.raylabs.doggie.ui.liked;
 
 // import android.content.Intent; // Dihapus
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,8 +17,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.raylabs.doggie.data.source.local.entity.DoggieEntity;
 import com.raylabs.doggie.databinding.FragmentLikedBinding;
 import com.raylabs.doggie.ui.ImagesAdapter;
-// import com.raylabs.doggie.ui.detail.DetailActivity; // Dihapus
-import com.raylabs.doggie.ui.detail.DetailBottomSheetFragment; // Ditambahkan
+import com.raylabs.doggie.ui.detail.DetailBottomSheetFragment;
 import com.raylabs.doggie.viewmodel.ViewModelFactory;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ import java.util.List;
 public class LikedFragment extends Fragment {
 
     private ImagesAdapter adapter;
-    private List<DoggieEntity> imagesGrid = new ArrayList<>();
+    private final List<DoggieEntity> imagesGrid = new ArrayList<>();
     private LikedViewModel viewModel;
     private FragmentLikedBinding fragmentLikedBinding;
 

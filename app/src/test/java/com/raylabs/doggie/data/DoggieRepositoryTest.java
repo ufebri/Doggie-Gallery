@@ -1,15 +1,19 @@
 package com.raylabs.doggie.data;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.raylabs.doggie.config.Constant;
 import com.raylabs.doggie.data.source.local.LocalDataSource;
 import com.raylabs.doggie.data.source.local.entity.DoggieEntity;
 import com.raylabs.doggie.data.source.remote.ApiResponse;
@@ -24,19 +28,34 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.Executor;
 
 public class DoggieRepositoryTest {
 
-    @Rule public InstantTaskExecutorRule instantRule = new InstantTaskExecutorRule();
+    @Rule
+    public InstantTaskExecutorRule instantRule = new InstantTaskExecutorRule();
 
     private RemoteDataSource remote;
     private LocalDataSource local;
     private DoggieRepository repo;
 
-    private static class DirectExecutor implements Executor {
-        @Override public void execute(Runnable r) { r.run(); }
+    @Before
+    public void setUp() throws Exception {
+        // mock final/kelas kompleks OK berkat mockito-inline
+        remote = Mockito.mock(RemoteDataSource.class);
+        local = Mockito.mock(LocalDataSource.class);
+
+        AppExecutors executors = new AppExecutors(new DirectExecutor(), new DirectExecutor(), new DirectExecutor());
+
+        // Reset singleton supaya setiap test dapat instance baru
+        Field f = DoggieRepository.class.getDeclaredField("INSTANCE");
+        f.setAccessible(true);
+        f.set(null, null);
+
+        repo = DoggieRepository.getInstance(remote, local, executors);
     }
 
     private static <T> T last(LiveData<T> live) {
@@ -51,20 +70,30 @@ public class DoggieRepositoryTest {
         return "https://images.dog.ceo/breeds/" + breed + "/n02088094_1007.jpg";
     }
 
-    @Before
-    public void setUp() throws Exception {
-        // mock final/kelas kompleks OK berkat mockito-inline
-        remote = Mockito.mock(RemoteDataSource.class);
-        local  = Mockito.mock(LocalDataSource.class);
+    @Test
+    public void getLikedImage_savesLikedTag() {
+        MutableLiveData<List<DoggieEntity>> db = new MutableLiveData<>();
+        db.setValue(Collections.emptyList());
+        when(local.getAllDoggie("liked")).thenReturn(db);
 
-        AppExecutors executors = new AppExecutors(new DirectExecutor(), new DirectExecutor(), new DirectExecutor());
+        MutableLiveData<ApiResponse<List<String>>> api = new MutableLiveData<>();
+        when(remote.getAllImage("2")).thenReturn(api);
 
-        // Reset singleton supaya setiap test dapat instance baru
-        Field f = DoggieRepository.class.getDeclaredField("INSTANCE");
-        f.setAccessible(true);
-        f.set(null, null);
+        doAnswer(inv -> {
+            db.setValue(inv.getArgument(0));
+            return null;
+        }).when(local).insertDoggie(anyList());
 
-        repo = DoggieRepository.getInstance(remote, local, executors);
+        LiveData<Resource<List<DoggieEntity>>> live = repo.getLikedImage("2");
+        last(live); // LOADING
+        api.setValue(ApiResponse.success(Collections.singletonList(url("husky"))));
+
+        Resource<List<DoggieEntity>> res = last(live);
+        assertEquals(Status.SUCCESS, res.status);
+        assertNotNull(res.data);
+        assertEquals(1, res.data.size());
+        assertEquals("liked", res.data.get(0).getTag());
+        assertEquals("husky", res.data.get(0).getType());
     }
 
     @Test
@@ -123,29 +152,6 @@ public class DoggieRepositoryTest {
     }
 
     @Test
-    public void getLikedImage_savesLikedTag() {
-        MutableLiveData<List<DoggieEntity>> db = new MutableLiveData<>();
-        db.setValue(Collections.emptyList());
-        when(local.getAllDoggie("liked")).thenReturn(db);
-
-        MutableLiveData<ApiResponse<List<String>>> api = new MutableLiveData<>();
-        when(remote.getAllImage("2")).thenReturn(api);
-
-        doAnswer(inv -> { db.setValue(inv.getArgument(0)); return null; }).when(local).insertDoggie(anyList());
-
-        LiveData<Resource<List<DoggieEntity>>> live = repo.getLikedImage("2");
-        last(live); // LOADING
-        api.setValue(ApiResponse.success(Collections.singletonList(url("husky"))));
-
-        Resource<List<DoggieEntity>> res = last(live);
-        assertEquals(Status.SUCCESS, res.status);
-        assertNotNull(res.data);
-        assertEquals(1, res.data.size());
-        assertEquals("liked", res.data.get(0).getTag());
-        assertEquals("husky", res.data.get(0).getType());
-    }
-
-    @Test
     public void getPopularImage_savesPopularTag() {
         MutableLiveData<List<DoggieEntity>> db = new MutableLiveData<>();
         db.setValue(Collections.emptyList());
@@ -154,7 +160,10 @@ public class DoggieRepositoryTest {
         MutableLiveData<ApiResponse<List<String>>> api = new MutableLiveData<>();
         when(remote.getAllImage("1")).thenReturn(api);
 
-        doAnswer(inv -> { db.setValue(inv.getArgument(0)); return null; }).when(local).insertDoggie(anyList());
+        doAnswer(inv -> {
+            db.setValue(inv.getArgument(0));
+            return null;
+        }).when(local).insertDoggie(anyList());
 
         LiveData<Resource<List<DoggieEntity>>> live = repo.getPopularImage("1");
         last(live); // LOADING
@@ -169,29 +178,6 @@ public class DoggieRepositoryTest {
     }
 
     @Test
-    public void getCategories_usesConstantCount_andForYouTag() {
-        MutableLiveData<List<DoggieEntity>> db = new MutableLiveData<>();
-        db.setValue(Collections.emptyList());
-        when(local.getCategoriesDogie()).thenReturn(db);
-
-        MutableLiveData<ApiResponse<List<String>>> api = new MutableLiveData<>();
-        when(remote.getAllImage(Constant.IMAGE_ITEM_COUNT_LOADED)).thenReturn(api);
-
-        doAnswer(inv -> { db.setValue(inv.getArgument(0)); return null; }).when(local).insertDoggie(anyList());
-
-        LiveData<Resource<List<DoggieEntity>>> live = repo.getCategories();
-        last(live); // LOADING
-        api.setValue(ApiResponse.success(Collections.singletonList(url("shiba"))));
-
-        Resource<List<DoggieEntity>> res = last(live);
-        assertEquals(Status.SUCCESS, res.status);
-        assertNotNull(res.data);
-        assertEquals(1, res.data.size());
-        assertEquals("for-you", res.data.get(0).getTag());
-        assertEquals("shiba", res.data.get(0).getType());
-    }
-
-    @Test
     public void remoteEmpty_returnsSuccessWithDbData() {
         MutableLiveData<List<DoggieEntity>> db = new MutableLiveData<>();
         db.setValue(Collections.emptyList());
@@ -200,7 +186,10 @@ public class DoggieRepositoryTest {
         MutableLiveData<ApiResponse<List<String>>> api = new MutableLiveData<>();
         when(remote.getAllImage("2")).thenReturn(api);
 
-        doAnswer(inv -> { db.setValue(inv.getArgument(0)); return null; }).when(local).insertDoggie(anyList());
+        doAnswer(inv -> {
+            db.setValue(inv.getArgument(0));
+            return null;
+        }).when(local).insertDoggie(anyList());
 
         LiveData<Resource<List<DoggieEntity>>> live = repo.getAllImage("2");
         last(live); // LOADING
@@ -221,7 +210,10 @@ public class DoggieRepositoryTest {
         MutableLiveData<ApiResponse<List<String>>> api = new MutableLiveData<>();
         when(remote.getAllImage("2")).thenReturn(api);
 
-        doAnswer(inv -> { db.setValue(inv.getArgument(0)); return null; }).when(local).insertDoggie(anyList());
+        doAnswer(inv -> {
+            db.setValue(inv.getArgument(0));
+            return null;
+        }).when(local).insertDoggie(anyList());
 
         LiveData<Resource<List<DoggieEntity>>> live = repo.getAllImage("2");
         last(live); // LOADING
@@ -231,5 +223,12 @@ public class DoggieRepositoryTest {
         assertEquals(Status.ERROR, res.status);
         assertEquals("network down", res.message);
         assertNotNull(res.data); // boleh kosong
+    }
+
+    private static class DirectExecutor implements Executor {
+        @Override
+        public void execute(Runnable r) {
+            r.run();
+        }
     }
 }

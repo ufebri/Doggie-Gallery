@@ -7,6 +7,8 @@ import static com.raylabs.doggie.vo.Status.SUCCESS;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.Objects;
+
 public class Resource<T> {
     @NonNull
     public final Status status;
@@ -49,10 +51,10 @@ public class Resource<T> {
         if (status != resource.status) {
             return false;
         }
-        if (message != null ? !message.equals(resource.message) : resource.message != null) {
+        if (!Objects.equals(message, resource.message)) {
             return false;
         }
-        return data != null ? data.equals(resource.data) : resource.data == null;
+        return Objects.equals(data, resource.data);
     }
 
     @Override

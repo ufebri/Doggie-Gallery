@@ -29,6 +29,11 @@
             android:exported="true"
             android:hardwareAccelerated="true" />
 
+        <activity
+            android:name="com.raylabs.doggie.ui.categories.detail.BreedGalleryActivity"
+            android:exported="false"
+            android:hardwareAccelerated="true" />
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/ads_application_id" />
