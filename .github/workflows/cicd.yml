@@ -368,11 +368,12 @@ jobs:
           echo "Binary upload status: $STATUS"
 
       - name: Submit version for review (optional)
-        if: ${{ secrets.AMAZON_AUTO_SUBMIT == 'true' }}
+        if: ${{ env.AMAZON_AUTO_SUBMIT == 'true' }}
         env:
           ACCESS_TOKEN: ${{ env.ACCESS_TOKEN }}
           AMAZON_APP_ID: ${{ secrets.AMAZON_APP_ID }}
           VERSION_ID: ${{ env.VERSION_ID }}
+          AMAZON_AUTO_SUBMIT: ${{ secrets.AMAZON_AUTO_SUBMIT }}
         run: |
           BASE_URL="https://developer.amazon.com/api/appstore"
           SUBMIT_RESP=$(curl -s -X POST "$BASE_URL/v1/applications/${AMAZON_APP_ID}/versions/${VERSION_ID}/submit" \

@@ -18,31 +18,30 @@ import java.util.concurrent.TimeUnit
 
 class CategoryPreviewSyncWorker(
     appContext: Context,
-    params: WorkerParameters
+    params: WorkerParameters,
+    private val helperProvider: (Context) -> BreedCategoryRepositoryHelper =
+        { ctx ->
+            val db = DoggieDatabase.getInstance(ctx)
+            val local = BreedCategoryLocalDataSource(db.breedCategoryDao())
+            val remote = RemoteDataSource.getInstance()
+            BreedCategoryRepositoryHelper(
+                ctx,
+                remote,
+                local,
+                PagingConfig(
+                    pageSize = DEFAULT_PAGE_SIZE,
+                    initialLoadSize = DEFAULT_PAGE_SIZE,
+                    enablePlaceholders = false
+                )
+            )
+        }
 ) : CoroutineWorker(appContext, params) {
 
-    override suspend fun doWork(): Result {
-        val database = DoggieDatabase.getInstance(applicationContext)
-        val localDataSource = BreedCategoryLocalDataSource(database.breedCategoryDao())
-        val remoteDataSource = RemoteDataSource.getInstance()
-        val helper = BreedCategoryRepositoryHelper(
-            context = applicationContext,
-            remoteDataSource = remoteDataSource,
-            localDataSource = localDataSource,
-            pagingConfig = PagingConfig(
-                pageSize = DEFAULT_PAGE_SIZE,
-                initialLoadSize = DEFAULT_PAGE_SIZE,
-                enablePlaceholders = false
-            )
-        )
+    override suspend fun doWork(): Result = runCatching {
+        helperProvider(applicationContext).refreshOldestPreviews(BATCH_SIZE)
+        Result.success()
+    }.getOrElse { Result.retry() }
 
-        return runCatching {
-            helper.refreshOldestPreviews(BATCH_SIZE)
-            Result.success()
-        }.getOrElse {
-            Result.retry()
-        }
-    }
 
     companion object {
         private const val UNIQUE_PERIODIC_NAME = "category_preview_sync_periodic"
