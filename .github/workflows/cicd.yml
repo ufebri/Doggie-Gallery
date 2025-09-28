@@ -268,6 +268,7 @@ jobs:
           ACCESS_TOKEN=$(echo "$TOKEN_RESPONSE" | jq -r '.access_token')
           if [ "$ACCESS_TOKEN" = "null" ] || [ -z "$ACCESS_TOKEN" ]; then echo "Failed to obtain access token" && exit 1; fi
           echo "ACCESS_TOKEN=$ACCESS_TOKEN" >> $GITHUB_ENV
+          echo "::add-mask::$ACCESS_TOKEN"
 
       - name: Create or fetch draft version in Amazon Appstore
         id: create_version
@@ -277,14 +278,30 @@ jobs:
         run: |
           if [ -z "$AMAZON_APP_ID" ]; then echo "Missing AMAZON_APP_ID secret" && exit 1; fi
           BASE_URL="https://developer.amazon.com/api/appstore"
-          # Create a new draft version (API path may vary by account; adjust if your org uses a different version)
-          CREATE_RESP=$(curl -s -X POST "$BASE_URL/v1/applications/${AMAZON_APP_ID}/versions" \
+
+          # Create a new draft version (capture body + status)
+          RESP=$(curl -s -w "\n%{http_code}" -X POST "$BASE_URL/v1/applications/${AMAZON_APP_ID}/versions" \
             -H "Authorization: Bearer $ACCESS_TOKEN" \
             -H 'Content-Type: application/json' \
             -d '{}')
-          echo "$CREATE_RESP" | jq . >/dev/null || { echo "Invalid create-version response"; echo "$CREATE_RESP"; exit 1; }
-          VERSION=$(echo "$CREATE_RESP" | jq -r '.versionId // .version // .id')
-          if [ "$VERSION" = "null" ] || [ -z "$VERSION" ]; then echo "Failed to resolve version id" && exit 1; fi
+
+          HTTP_CODE=$(echo "$RESP" | tail -n1)
+          BODY=$(echo "$RESP" | sed '$d')
+
+          echo "Create-version HTTP: $HTTP_CODE"
+          echo "$BODY" | jq . || true
+
+          if [ "$HTTP_CODE" -ge 400 ]; then
+            echo "Create-version failed with HTTP $HTTP_CODE" && exit 1
+          fi
+
+          VERSION=$(echo "$BODY" | jq -r '.versionId // .version // .id // empty')
+          if [ -z "$VERSION" ]; then
+            ERR=$(echo "$BODY" | jq -r '.error // .errors // .message // empty')
+            echo "Failed to resolve version id. Error: ${ERR:-unknown}. Raw body:" && echo "$BODY"
+            exit 1
+          fi
+
           echo "VERSION_ID=$VERSION" >> $GITHUB_ENV
 
       - name: Read version from version.properties

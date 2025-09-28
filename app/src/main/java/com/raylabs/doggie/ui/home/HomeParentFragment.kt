@@ -1,96 +1,69 @@
-package com.raylabs.doggie.ui.home;
+package com.raylabs.doggie.ui.home
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.google.android.material.tabs.TabLayoutMediator
+import com.raylabs.doggie.databinding.FragmentHomeParentBinding
+import com.raylabs.doggie.ui.categories.CategoriesFragment
+import com.raylabs.doggie.ui.liked.LikedFragment
+import com.raylabs.doggie.ui.popular.PopularFragment
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
+class HomeParentFragment : Fragment() {
 
-import com.google.android.material.tabs.TabLayoutMediator;
-import com.raylabs.doggie.databinding.FragmentHomeParentBinding;
-import com.raylabs.doggie.ui.categories.CategoriesFragment;
-import com.raylabs.doggie.ui.liked.LikedFragment;
-import com.raylabs.doggie.ui.popular.PopularFragment;
+    private var binding: FragmentHomeParentBinding? = null
 
-public class HomeParentFragment extends Fragment {
+    private val titles = arrayOf("For You", "Most Popular", "Most Liked", "Categories")
 
-    private FragmentHomeParentBinding binding;
-    private HomeFragment homeFragment;
-    private PopularFragment popularFragment;
-    private LikedFragment likedFragment;
-    private CategoriesFragment categoriesFragment;
-
-    private final String[] titles = new String[]{"For You", "Most Popular", "Most Liked", "Categories"};
-
-    public HomeParentFragment() {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        val fragmentBinding = FragmentHomeParentBinding.inflate(inflater, container, false)
+        binding = fragmentBinding
+        return fragmentBinding.root
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentHomeParentBinding.inflate(inflater);
-        return binding.getRoot();
-    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        val fragments = listOf(
+            HomeFragment(),
+            PopularFragment(),
+            LikedFragment(),
+            CategoriesFragment()
+        )
 
-        homeFragment = new HomeFragment();
-        popularFragment = new PopularFragment();
-        likedFragment = new LikedFragment();
-        categoriesFragment = new CategoriesFragment();
-
-        binding.vpHome.setAdapter(new ViewPagerAdapter(this));
-        new TabLayoutMediator(binding.tlMain, binding.vpHome,
-                ((tab, position) -> tab.setText(titles[position]))).attach();
-
-        populateTabLayout();
-    }
-
-
-    private void populateTabLayout() {
-
-        //Setup Margin TabLayout
-        int betweenSpace = 5;
-        ViewGroup slidingTabStrip = (ViewGroup) binding.tlMain.getChildAt(0);
-
-        for (int i = 0; i < slidingTabStrip.getChildCount() - 1; i++) {
-            View v = slidingTabStrip.getChildAt(i);
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
-            params.rightMargin = betweenSpace;
-        }
-    }
-
-    private class ViewPagerAdapter extends FragmentStateAdapter {
-
-        public ViewPagerAdapter(@NonNull Fragment fragment) {
-            super(fragment);
-        }
-
-        @NonNull
-        @Override
-        public Fragment createFragment(int position) {
-            switch (position) {
-                case 0:
-                    return homeFragment;
-                case 1:
-                    return popularFragment;
-                case 2:
-                    return likedFragment;
-                case 3:
-                    return categoriesFragment;
+        binding?.let { binding ->
+            binding.vpHome.adapter = object : FragmentStateAdapter(this) {
+                override fun getItemCount(): Int = fragments.size
+                override fun createFragment(position: Int): Fragment = fragments[position]
             }
-            return new HomeFragment();
-        }
 
-        @Override
-        public int getItemCount() {
-            return titles.length;
+            TabLayoutMediator(binding.tlMain, binding.vpHome) { tab, position ->
+                tab.text = titles.getOrNull(position)
+            }.attach()
+
+            populateTabLayout(binding)
         }
+    }
+
+    private fun populateTabLayout(binding: FragmentHomeParentBinding) {
+        val slidingTabStrip = binding.tlMain.getChildAt(0) as? ViewGroup ?: return
+        val betweenSpace = 5
+        repeat(slidingTabStrip.childCount - 1) { index ->
+            val child = slidingTabStrip.getChildAt(index)
+            val params = child.layoutParams as? ViewGroup.MarginLayoutParams ?: return@repeat
+            params.rightMargin = betweenSpace
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
     }
 }

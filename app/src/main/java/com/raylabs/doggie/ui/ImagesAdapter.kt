@@ -1,76 +1,43 @@
-package com.raylabs.doggie.ui;
+package com.raylabs.doggie.ui
 
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.target.Target
+import com.raylabs.doggie.R
+import com.raylabs.doggie.data.source.local.entity.DoggieEntity
+import com.raylabs.doggie.databinding.ItemImageBinding
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+class ImagesAdapter(
+    private val imagesGrid: List<DoggieEntity>,
+    private val listener: (DoggieEntity) -> Unit
+) : RecyclerView.Adapter<ImagesAdapter.Holder>() {
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.target.Target;
-import com.raylabs.doggie.R;
-import com.raylabs.doggie.data.source.local.entity.DoggieEntity;
-import com.raylabs.doggie.databinding.ItemImageBinding;
-
-import java.util.List;
-
-/**
- * Created by user on 5/7/18.
- */
-
-public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.Holder> {
-    private final List<DoggieEntity> imagesGrid;
-    private final onItemClickListener listener;
-
-    public ImagesAdapter(List<DoggieEntity> imagesGrid, onItemClickListener listener) {
-        this.imagesGrid = imagesGrid;
-        this.listener = listener;
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
+        val binding = ItemImageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return Holder(binding)
     }
 
-
-    @NonNull
-    @Override
-    public ImagesAdapter.Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ItemImageBinding binding = ItemImageBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
-        return new Holder(binding);
+    override fun onBindViewHolder(holder: Holder, position: Int) {
+        holder.bind(imagesGrid[position], listener)
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull ImagesAdapter.Holder holder, int position) {
-        holder.bind(position, listener);
-    }
+    override fun getItemCount(): Int = imagesGrid.size
 
-    @Override
-    public int getItemCount() {
-        return imagesGrid.size();
-    }
+    class Holder(private val binding: ItemImageBinding) : RecyclerView.ViewHolder(binding.root) {
 
-    public class Holder extends RecyclerView.ViewHolder {
+        fun bind(item: DoggieEntity, listener: (DoggieEntity) -> Unit) {
+            Glide.with(itemView.context)
+                .load(item.link)
+                .error(R.drawable.outline_broken_image_24)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                .placeholder(R.drawable.ic_launcher_foreground)
+                .into(binding.ivAnimal)
 
-        final ItemImageBinding binding;
-
-        Holder(ItemImageBinding binding) {
-            super(binding.getRoot());
-            this.binding = binding;
+            itemView.setOnClickListener { listener(item) }
         }
-
-        void bind(int position, onItemClickListener listener) {
-
-            Glide.with(itemView.getContext())
-                    .load(imagesGrid.get(position).getLink())
-                    .error(R.drawable.ic_launcher_background)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-                    .placeholder(R.drawable.ic_launcher_foreground)
-                    .into(binding.ivAnimal);
-
-            itemView.setOnClickListener(v -> listener.onItemClick(imagesGrid.get(position)));
-        }
-
-    }
-
-    public interface onItemClickListener {
-        void onItemClick(DoggieEntity item);
     }
 }

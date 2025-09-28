@@ -1,58 +1,55 @@
-package com.raylabs.doggie.viewmodel;
+package com.raylabs.doggie.viewmodel
 
-import android.app.Application;
+import android.app.Application
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.raylabs.doggie.data.DoggieRepository
+import com.raylabs.doggie.di.Injection
+import com.raylabs.doggie.ui.categories.CategoriesViewModel
+import com.raylabs.doggie.ui.categories.detail.BreedGalleryViewModel
+import com.raylabs.doggie.ui.home.HomeViewModel
+import com.raylabs.doggie.ui.liked.LikedViewModel
+import com.raylabs.doggie.ui.popular.PopularViewModel
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
+class ViewModelFactory private constructor(
+    private val doggieRepository: DoggieRepository
+) : ViewModelProvider.NewInstanceFactory() {
 
-import com.raylabs.doggie.data.DoggieRepository;
-import com.raylabs.doggie.di.Injection;
-import com.raylabs.doggie.ui.categories.CategoriesViewModel;
-import com.raylabs.doggie.ui.categories.detail.BreedGalleryViewModel;
-import com.raylabs.doggie.ui.home.HomeViewModel;
-import com.raylabs.doggie.ui.liked.LikedViewModel;
-import com.raylabs.doggie.ui.popular.PopularViewModel;
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        val viewModel = when {
+            modelClass.isAssignableFrom(HomeViewModel::class.java) -> HomeViewModel(doggieRepository)
+            modelClass.isAssignableFrom(LikedViewModel::class.java) -> LikedViewModel(
+                doggieRepository
+            )
 
-public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
+            modelClass.isAssignableFrom(PopularViewModel::class.java) -> PopularViewModel(
+                doggieRepository
+            )
 
-    private static volatile ViewModelFactory INSTANCE;
-    private final Application application;
-    private final DoggieRepository doggieRepository;
+            modelClass.isAssignableFrom(CategoriesViewModel::class.java) -> CategoriesViewModel(
+                doggieRepository
+            )
 
-    public ViewModelFactory(Application application, DoggieRepository doggieRepository) {
-        this.application = application;
-        this.doggieRepository = doggieRepository;
+            modelClass.isAssignableFrom(BreedGalleryViewModel::class.java) -> BreedGalleryViewModel(
+                doggieRepository
+            )
+
+            else -> throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
+        }
+        @Suppress("UNCHECKED_CAST")
+        return viewModel as T
     }
 
-    public static ViewModelFactory getInstance(Application application) {
-        if (INSTANCE == null) {
-            synchronized (ViewModelFactory.class) {
-                INSTANCE = new ViewModelFactory(application, Injection.provideRepository(application.getApplicationContext()));
+    companion object {
+        @Volatile
+        private var instance: ViewModelFactory? = null
+
+        fun getInstance(application: Application): ViewModelFactory {
+            return instance ?: synchronized(this) {
+                instance ?: ViewModelFactory(
+                    Injection.provideRepository(application.applicationContext)
+                ).also { instance = it }
             }
         }
-        return INSTANCE;
-    }
-
-    @SuppressWarnings("unchecked")
-    @NonNull
-    @Override
-    public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        if (modelClass.isAssignableFrom(HomeViewModel.class)) {
-            return (T) new HomeViewModel(doggieRepository);
-        }
-        if (modelClass.isAssignableFrom(LikedViewModel.class)) {
-            return (T) new LikedViewModel(doggieRepository);
-        }
-        if (modelClass.isAssignableFrom(PopularViewModel.class)) {
-            return (T) new PopularViewModel(doggieRepository);
-        }
-        if (modelClass.isAssignableFrom(CategoriesViewModel.class)) {
-            return (T) new CategoriesViewModel(doggieRepository);
-        }
-        if (modelClass.isAssignableFrom(BreedGalleryViewModel.class)) {
-            return (T) new BreedGalleryViewModel(doggieRepository);
-        }
-        throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
     }
 }
