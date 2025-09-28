@@ -93,17 +93,7 @@ tasks.register("jacocoTestReport", JacocoReport) {
         csv.required = false
     }
 
-    // === Sumber kode (Java & Kotlin) ===
-    sourceDirectories.setFrom files("src/main/java", "src/main/kotlin")
-
-    // === Direktori class yang SUDAH works di proyekmu + fallback ===
-    def candidateDirs = [
-            layout.buildDirectory.dir("intermediates/javac/debug").get().asFile,
-            layout.buildDirectory.dir("intermediates/javac/debug/classes").get().asFile,
-            layout.buildDirectory.dir("tmp/kotlin-classes/debug").get().asFile
-    ].findAll { it.exists() }
-
-    // Pola exclude: generated + UI layer
+    // === Pola exclude: generated + UI layer ===
     def excludes = [
             // generated/boilerplate
             '**/R.class', '**/R$*.class',
@@ -122,22 +112,53 @@ tasks.register("jacocoTestReport", JacocoReport) {
             '**/com/raylabs/doggie/data/source/local/room/**'
     ]
 
-    def classTrees = candidateDirs.collect { dir ->
-        fileTree(dir: dir, exclude: excludes)
+    // === Kumpulkan lokasi class untuk beragam versi AGP (Linux CI friendly) ===
+    def b = layout.buildDirectory.get().asFile
+    def candidateDirs = [
+            new File(b, 'tmp/kotlin-classes/debug'),
+            new File(b, 'intermediates/javac/debug/classes'),
+            new File(b, 'intermediates/classes/debug'),
+            new File(b, 'intermediates/javac/debug'),
+            new File(b, 'intermediates/bytecode/debug')
+    ].findAll { it.exists() }
+
+    // Tambahan: beberapa AGP menaruh class ke dalam JAR
+    def candidateJars = [
+            new File(b, 'intermediates/compile_app_classes_jar/debug/classes.jar'),
+            new File(b, 'intermediates/aar_main_jar/debug/classes.jar')
+    ].findAll { it.exists() }
+
+    // Bangun FileTree untuk direktori dan JAR
+    def classTrees = candidateDirs.collect { dir -> fileTree(dir: dir, exclude: excludes) }
+    candidateJars.each { jar ->
+        classTrees.add(zipTree(jar).matching { exclude(excludes) })
     }
     classDirectories.setFrom files(classTrees)
 
-    // === File eksekusi coverage ===
-    executionData.setFrom files(
-            layout.buildDirectory.file("jacoco/testDebugUnitTest.exec").get().asFile,
-            layout.buildDirectory.file("outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec").get().asFile
-    ).filter { it.exists() }
+    // === File eksekusi coverage (beberapa lokasi umum) ===
+    def execCandidates = [
+            new File(b, 'jacoco/testDebugUnitTest.exec'),
+            new File(b, 'outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec')
+    ]
+    // fallback: scan wildcard *.exec/*.ec bila path berubah di CI
+    def wildcardExec = fileTree(dir: b, include: [
+            '**/testDebugUnitTest.exec',
+            '**/*.ec'
+    ])
+    def execFiles = (execCandidates.findAll { it.exists() } + wildcardExec.files.findAll { it.exists() }).unique()
+    executionData.setFrom files(execFiles)
 
     // Debug log
     doFirst {
+        println "[jacoco] buildDir = ${b.absolutePath}"
+        println "[jacoco] candidateDirs:"
+        candidateDirs.each { println " - DIR: ${it.absolutePath} (exists=${it.exists()})" }
+        candidateJars.each { println " - JAR: ${it.absolutePath} (exists=${it.exists()})" }
         def total = 0
         classTrees.each { ft -> total += ft.files.size() }
-        println "[jacoco] class files included = $total"
+        println "[jacoco] class files included = ${total}"
+        println "[jacoco] executionData files:"
+        execFiles.each { println " - EXEC: ${it.absolutePath} (exists=${it.exists()})" }
     }
 }
 
