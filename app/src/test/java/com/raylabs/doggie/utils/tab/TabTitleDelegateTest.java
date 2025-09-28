@@ -1,7 +1,8 @@
 package com.raylabs.doggie.utils.tab;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class TabTitleDelegateTest {
 

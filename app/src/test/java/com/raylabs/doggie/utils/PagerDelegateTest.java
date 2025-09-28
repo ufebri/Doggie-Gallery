@@ -1,12 +1,14 @@
 package com.raylabs.doggie.utils;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 public class PagerDelegateTest {
 

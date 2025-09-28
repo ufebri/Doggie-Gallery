@@ -3,8 +3,8 @@ package com.raylabs.doggie.data.paging
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.raylabs.doggie.data.source.remote.RemoteDataSource
-import kotlinx.coroutines.Dispatchers // Ditambahkan
-import kotlinx.coroutines.withContext  // Ditambahkan
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class BreedImagesPagingSource(
     private val remoteDataSource: RemoteDataSource,
@@ -13,20 +13,33 @@ class BreedImagesPagingSource(
     private val pageSize: Int
 ) : PagingSource<Int, String>() {
 
+    private val emittedUrls = mutableSetOf<String>()
+    private val maxFetchAttempts = 5
+
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, String> {
         // Halaman saat ini yang akan dimuat. Jika params.key null, kita mulai dari halaman 0 (atau 1 jika Anda prefer).
         // Untuk API dog.ceo yang tidak memiliki cursor/offset, 'key' adalah nomor halaman simulasi kita.
         val currentPageIndex = params.key ?: 0 // Atau FIRST_PAGE_INDEX jika Anda punya konstanta
 
         return try {
-            // Jalankan operasi jaringan di background thread
-            val images = withContext(Dispatchers.IO) {
-                remoteDataSource.getRandomImagesSync(breed, subBreed, pageSize)
+            val pageData = mutableListOf<String>()
+            var attempt = 0
+
+            while (pageData.size < pageSize && attempt < maxFetchAttempts) {
+                val batch = withContext(Dispatchers.IO) {
+                    remoteDataSource.getRandomImagesSync(breed, subBreed, pageSize)
+                }
+                if (batch.isEmpty()) {
+                    break
+                }
+                val unique = batch.filter { emittedUrls.add(it) }
+                pageData.addAll(unique)
+                attempt++
             }
 
             // Jika API mengembalikan daftar kosong (misalnya, tidak ada gambar untuk breed tersebut, atau akhir dari data jika API mendukungnya)
             // Atau jika kita ingin berhenti memuat setelah sejumlah halaman tertentu (bisa ditambahkan logika di sini)
-            if (images.isEmpty()) {
+            if (pageData.isEmpty()) {
                 LoadResult.Page(
                     data = emptyList(),
                     prevKey = if (currentPageIndex == 0) null else currentPageIndex - 1,
@@ -34,7 +47,7 @@ class BreedImagesPagingSource(
                 )
             } else {
                 LoadResult.Page(
-                    data = images,
+                    data = pageData,
                     prevKey = if (currentPageIndex == 0) null else currentPageIndex - 1,
                     // nextKey akan menjadi halaman berikutnya.
                     // Jika Anda ingin membatasi jumlah halaman (misalnya MAX_PAGE seperti sebelumnya),

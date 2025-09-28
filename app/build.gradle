@@ -175,6 +175,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.9.4"
     implementation "androidx.paging:paging-runtime-ktx:3.3.6"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2"
+    implementation "androidx.work:work-runtime-ktx:2.10.5"
 
     //image
     implementation 'com.github.bumptech.glide:glide:5.0.5'
@@ -182,6 +183,7 @@ dependencies {
 
     //room
     implementation "androidx.room:room-runtime:2.8.1"
+    implementation "androidx.room:room-paging:2.8.1"
     annotationProcessor "androidx.room:room-compiler:2.8.1"
 
     implementation platform('com.google.firebase:firebase-bom:34.3.0')
