@@ -84,6 +84,12 @@ android {
     }
 }
 
+// Ensure unit tests always produce coverage data (CI friendly)
+tasks.withType(Test).configureEach {
+    jacoco.includeNoLocationClasses = true
+    jacoco.excludes = ['jdk.internal.*']
+}
+
 tasks.register("jacocoTestReport", JacocoReport) {
     dependsOn "testDebugUnitTest"
 
@@ -135,17 +141,11 @@ tasks.register("jacocoTestReport", JacocoReport) {
     }
     classDirectories.setFrom files(classTrees)
 
-    // === File eksekusi coverage (beberapa lokasi umum) ===
-    def execCandidates = [
-            new File(b, 'jacoco/testDebugUnitTest.exec'),
-            new File(b, 'outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec')
-    ]
-    // fallback: scan wildcard *.exec/*.ec bila path berubah di CI
-    def wildcardExec = fileTree(dir: b, include: [
-            '**/testDebugUnitTest.exec',
+    // === Collect ALL execution data under buildDir (exec/ec) ===
+    def execFiles = fileTree(dir: b, include: [
+            '**/*.exec',
             '**/*.ec'
     ])
-    def execFiles = (execCandidates.findAll { it.exists() } + wildcardExec.files.findAll { it.exists() }).unique()
     executionData.setFrom files(execFiles)
 
     // Debug log

@@ -199,7 +199,7 @@ jobs:
             ${{ runner.os }}-gradle
 
       - name: Run tests and generate Jacoco report
-        run: ./gradlew clean testDebugUnitTest jacocoTestReport
+        run: ./gradlew --no-daemon clean testDebugUnitTest jacocoTestReport
 
       - name: Check if coverage report exists
         run: ls -lh app/build/reports/jacoco/jacocoTestReport/
