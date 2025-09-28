@@ -10,11 +10,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.raylabs.doggie.databinding.FragmentHomeParentBinding;
 import com.raylabs.doggie.ui.categories.CategoriesFragment;
 import com.raylabs.doggie.ui.liked.LikedFragment;
 import com.raylabs.doggie.ui.popular.PopularFragment;
-import com.google.android.material.tabs.TabLayoutMediator;
 
 public class HomeParentFragment extends Fragment {
 

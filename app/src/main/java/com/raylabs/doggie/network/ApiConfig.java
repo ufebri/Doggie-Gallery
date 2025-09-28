@@ -1,7 +1,8 @@
 package com.raylabs.doggie.network;
 
-
 import com.raylabs.doggie.BuildConfig;
+
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -14,6 +15,9 @@ public class ApiConfig {
                 .setLevel(BuildConfig.DEBUG ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(loggingInterceptor)
+                .connectTimeout(30, TimeUnit.SECONDS) // Ditambahkan
+                .readTimeout(30, TimeUnit.SECONDS)    // Ditambahkan
+                .writeTimeout(30, TimeUnit.SECONDS)   // Ditambahkan
                 .build();
         Retrofit retrofit = new retrofit2.Retrofit.Builder()
                 .baseUrl("https://dog.ceo/")

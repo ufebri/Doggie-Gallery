@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.raylabs.doggie.data.DoggieRepository;
 import com.raylabs.doggie.di.Injection;
 import com.raylabs.doggie.ui.categories.CategoriesViewModel;
+import com.raylabs.doggie.ui.categories.detail.BreedGalleryViewModel;
 import com.raylabs.doggie.ui.home.HomeViewModel;
 import com.raylabs.doggie.ui.liked.LikedViewModel;
 import com.raylabs.doggie.ui.popular.PopularViewModel;
@@ -48,6 +49,9 @@ public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
         }
         if (modelClass.isAssignableFrom(CategoriesViewModel.class)) {
             return (T) new CategoriesViewModel(doggieRepository);
+        }
+        if (modelClass.isAssignableFrom(BreedGalleryViewModel.class)) {
+            return (T) new BreedGalleryViewModel(doggieRepository);
         }
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
     }

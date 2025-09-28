@@ -9,9 +9,9 @@ import com.raylabs.doggie.vo.Resource;
 
 public abstract class NetworkBoundResource<ResultType, RequestType> {
 
-    private MediatorLiveData<Resource<ResultType>> result = new MediatorLiveData<>();
+    private final MediatorLiveData<Resource<ResultType>> result = new MediatorLiveData<>();
 
-    private AppExecutors mExecutors;
+    private final AppExecutors mExecutors;
 
     public NetworkBoundResource(AppExecutors appExecutors) {
 

@@ -58,8 +58,7 @@ public class DetailBottomSheetFragment extends BottomSheetDialogFragment {
         super.onViewCreated(view, savedInstanceState);
 
         Dialog dialog = getDialog();
-        if (dialog instanceof BottomSheetDialog) {
-            BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) dialog;
+        if (dialog instanceof BottomSheetDialog bottomSheetDialog) {
             FrameLayout bottomSheetInternal = bottomSheetDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
             if (bottomSheetInternal != null) {
                 BottomSheetBehavior.from(bottomSheetInternal).setState(BottomSheetBehavior.STATE_EXPANDED);
