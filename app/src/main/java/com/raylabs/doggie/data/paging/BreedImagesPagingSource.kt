@@ -19,7 +19,7 @@ class BreedImagesPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, String> {
         // Halaman saat ini yang akan dimuat. Jika params.key null, kita mulai dari halaman 0 (atau 1 jika Anda prefer).
         // Untuk API dog.ceo yang tidak memiliki cursor/offset, 'key' adalah nomor halaman simulasi kita.
-        val currentPageIndex = params.key ?: 0 // Atau FIRST_PAGE_INDEX jika Anda punya konstanta
+        val currentPageIndex = params.key ?: FIRST_PAGE_INDEX
 
         return try {
             val pageData = mutableListOf<String>()
@@ -70,8 +70,7 @@ class BreedImagesPagingSource(
         }
     }
 
-    // companion object {
-    //     private const val FIRST_PAGE_INDEX = 0 // Atau 1, sesuaikan dengan preferensi Anda
-    //     // private const val MAX_PAGE_SIMULATION = 3 // Jika Anda ingin membatasi
-    // }
+    companion object {
+        private const val FIRST_PAGE_INDEX = 0 // Atau 1, sesuaikan dengan preferensi Anda
+    }
 }

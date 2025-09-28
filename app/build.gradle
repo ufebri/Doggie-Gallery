@@ -155,6 +155,8 @@ dependencies {
     testImplementation 'androidx.arch.core:core-testing:2.2.0'
     testImplementation 'org.mockito:mockito-core:5.20.0'
     testImplementation 'org.mockito:mockito-inline:5.2.0'
+    testImplementation 'org.mockito.kotlin:mockito-kotlin:6.0.0'
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2"
 
     androidTestImplementation 'androidx.test.ext:junit:1.3.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.7.0'
@@ -173,7 +175,11 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.4"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.9.4"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.9.4"
+
+    //paging3
     implementation "androidx.paging:paging-runtime-ktx:3.3.6"
+    testImplementation "androidx.paging:paging-common-ktx:3.3.6"
+
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2"
     implementation "androidx.work:work-runtime-ktx:2.10.5"
 
@@ -192,4 +198,5 @@ dependencies {
 
     implementation 'com.google.android.gms:play-services-ads:24.6.0'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.2.0'
+    implementation "org.jetbrains.kotlin:kotlin-test:2.2.0"
 }
