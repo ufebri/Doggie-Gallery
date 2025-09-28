@@ -158,15 +158,20 @@ tasks.register("jacocoTestReport", JacocoReport) {
     // Debug log
     doFirst {
         println "[jacoco] buildDir = ${b.absolutePath}"
-        println "[jacoco] candidateDirs:"
-        candidateDirs.each { println " - DIR: ${it.absolutePath} (exists=${it.exists()})" }
-        println "[jacoco] candidateJars:"
-        candidateJars.each { println " - JAR: ${it.absolutePath} (exists=${it.exists()})" }
+
+        println "[jacoco] class dir trees:"
+        classDirTrees.each { println " - DIR tree: ${it.dir} (exists=${it.dir.exists()}) files=${it.files.size()}" }
+
         println "[jacoco] wildcard debug class scan enabled"
+        println "[jacoco] wildcard classes count = ${wildcardClassTrees.files?.size() ?: 0}"
+
         println "[jacoco] classes.jar found: ${classesJarFiles.size()}"
+        classesJarFiles.each { println " - JAR: ${it.absolutePath} (exists=${it.exists()})" }
+
         def total = 0
-        classTrees.each { ft -> total += ft.files.size() }
+        allTrees.each { ft -> total += ft.files.size() }
         println "[jacoco] class files included = ${total}"
+
         println "[jacoco] executionData files:"
         execFiles.each { println " - EXEC: ${it.absolutePath} (exists=${it.exists()})" }
     }
