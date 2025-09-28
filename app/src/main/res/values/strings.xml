@@ -1,8 +1,5 @@
 <resources>
     <string name="app_name">Doggie Gallery</string>
-    <string name="title_home">home</string>
-    <string name="favorite">Favorite</string>
-    <string name="title_petshop">Pets</string>
     <string name="download">Download</string>
     <string name="set_as_wallpaper">Set As Wallpaper</string>
     <string name="share">Share</string>

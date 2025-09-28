@@ -3,10 +3,7 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="colorBar">#12151d</color>
     <color name="colorBgTabSelected">#FF6263</color>
-    <color name="colorBg">#202125</color>
     <color name="colorText">#A1A1A1</color>
-    <color name="colorBackground">#FFFFFF</color>
     <color name="colorStatusBar">#8F03A9F4</color>
 </resources>
