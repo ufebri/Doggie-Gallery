@@ -13,4 +13,13 @@
     <string name="tab_title_categories_random">Random</string>
     <string name="error_image_link_missing">Link of image Error</string>
     <string name="content_desc_detail_image">Image of content</string>
+    <string name="toast_image_not_ready">Image is still loading</string>
+    <string name="toast_download_start">Downloading image…</string>
+    <string name="toast_download_success">Image saved to gallery</string>
+    <string name="toast_download_failed">Failed to save image</string>
+    <string name="toast_wallpaper_success">Wallpaper updated</string>
+    <string name="toast_wallpaper_failed">Failed to set wallpaper</string>
+    <string name="toast_share_failed">Unable to share image</string>
+    <string name="toast_copy_success">Link copied to clipboard</string>
+    <string name="toast_permission_denied">Permission denied</string>
 </resources>
