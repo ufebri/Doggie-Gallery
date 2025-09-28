@@ -28,6 +28,7 @@ public class DetailBottomSheetFragment extends BottomSheetDialogFragment {
 
     private static final String ARG_LINK = "arg_link";
     private FragmentDetailBottomSheetBinding binding;
+    private CustomTarget<Bitmap> imageTarget;
     private String link;
 
     public static DetailBottomSheetFragment newInstance(String link) {
@@ -85,31 +86,44 @@ public class DetailBottomSheetFragment extends BottomSheetDialogFragment {
     private void setImage() {
         if (getContext() == null) return;
 
+        final FragmentDetailBottomSheetBinding currentBinding = binding;
+        imageTarget = new CustomTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                if (currentBinding != null) {
+                    currentBinding.ivBsContent.setImageBitmap(resource);
+                }
+            }
+
+            @Override
+            public void onLoadCleared(@Nullable Drawable placeholder) {
+                if (currentBinding != null) {
+                    currentBinding.ivBsContent.setImageDrawable(placeholder);
+                }
+            }
+
+            @Override
+            public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                super.onLoadFailed(errorDrawable);
+                if (currentBinding != null) {
+                    currentBinding.ivBsContent.setImageResource(R.drawable.outline_broken_image_24);
+                }
+            }
+        };
+
         Glide.with(getContext())
                 .asBitmap()
                 .load(link)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(new CustomTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                        binding.ivBsContent.setImageBitmap(resource);
-                    }
-
-                    @Override
-                    public void onLoadCleared(@Nullable Drawable placeholder) {
-                        binding.ivBsContent.setImageDrawable(placeholder);
-                    }
-
-                    @Override
-                    public void onLoadFailed(@Nullable Drawable errorDrawable) {
-                        super.onLoadFailed(errorDrawable);
-                        binding.ivBsContent.setImageResource(R.drawable.outline_broken_image_24);
-                    }
-                });
+                .into(imageTarget);
     }
 
     @Override
     public void onDestroyView() {
+        if (imageTarget != null) {
+            Glide.with(this).clear(imageTarget);
+            imageTarget = null;
+        }
         super.onDestroyView();
         binding = null;
     }

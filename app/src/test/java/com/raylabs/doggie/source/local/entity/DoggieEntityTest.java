@@ -1,9 +1,12 @@
 package com.raylabs.doggie.source.local.entity;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 
 import com.raylabs.doggie.data.source.local.entity.DoggieEntity;
+
+import org.junit.Test;
 
 public class DoggieEntityTest {
 

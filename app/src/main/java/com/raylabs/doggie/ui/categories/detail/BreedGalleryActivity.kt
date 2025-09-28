@@ -4,22 +4,24 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.view.View
 import android.widget.Toast
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.raylabs.doggie.R
 import com.raylabs.doggie.databinding.ActivityBreedGalleryBinding
 import com.raylabs.doggie.ui.common.PagingLoadStateAdapter
 import com.raylabs.doggie.ui.detail.DetailBottomSheetFragment
+import com.raylabs.doggie.utils.AdsHelper
 import com.raylabs.doggie.viewmodel.ViewModelFactory
 import com.raylabs.doggie.vo.BreedCategory
 import kotlinx.coroutines.Job
@@ -66,6 +68,7 @@ class BreedGalleryActivity : AppCompatActivity() {
 
         setupToolbar()
         setupList()
+        setupAds()
         setupViewModel()
     }
 
@@ -82,19 +85,22 @@ class BreedGalleryActivity : AppCompatActivity() {
                     .show(supportFragmentManager, "DetailBottomSheetFragmentTag_BreedGallery")
             }
         }
+        adapter.stateRestorationPolicy =
+            RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         binding.rvBreedImages.layoutManager =
             StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         binding.rvBreedImages.setHasFixedSize(true)
+        binding.rvBreedImages.itemAnimator = null
         binding.rvBreedImages.adapter = adapter.withLoadStateFooter(
             footer = PagingLoadStateAdapter { adapter.retry() }
         )
 
         adapter.addLoadStateListener { loadStates ->
             val refresh = loadStates.refresh
-            binding.pbLoading.visibility =
-                if (refresh is androidx.paging.LoadState.Loading) View.VISIBLE else View.GONE
-            binding.rvBreedImages.visibility =
-                if (refresh is androidx.paging.LoadState.Loading) View.INVISIBLE else View.VISIBLE
+            val isLoading = refresh is androidx.paging.LoadState.Loading
+            val isListEmpty = adapter.itemCount == 0
+            binding.pbLoading.isVisible = isLoading && isListEmpty
+            binding.rvBreedImages.isVisible = !isListEmpty || !isLoading
 
             val errorState = loadStates.append as? androidx.paging.LoadState.Error
                 ?: loadStates.prepend as? androidx.paging.LoadState.Error
@@ -116,12 +122,17 @@ class BreedGalleryActivity : AppCompatActivity() {
         collectImages()
     }
 
+    private fun setupAds() {
+        AdsHelper.init(applicationContext)
+        AdsHelper.loadBanner(this, binding.adViewGallery)
+    }
+
     private fun collectImages() {
         collectJob?.cancel()
         collectJob = lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.images.collectLatest { pagingData ->
-                    adapter.submitData(pagingData)
+                    adapter.submitData(lifecycle, pagingData)
                 }
             }
         }

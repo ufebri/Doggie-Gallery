@@ -21,5 +21,7 @@ public interface DoggieDataSource {
 
     Flow<PagingData<BreedCategory>> getCategories();
 
+    void requestCategoryPreview(BreedCategory category);
+
     Flow<PagingData<String>> getBreedImages(String breed, String subBreed, int pageSize);
 }

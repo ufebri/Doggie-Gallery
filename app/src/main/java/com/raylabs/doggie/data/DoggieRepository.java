@@ -1,5 +1,7 @@
 package com.raylabs.doggie.data;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.paging.Pager;
@@ -7,7 +9,7 @@ import androidx.paging.PagingConfig;
 import androidx.paging.PagingData;
 
 import com.raylabs.doggie.data.paging.BreedImagesPagingSource;
-import com.raylabs.doggie.data.paging.CategoriesPagingSource;
+import com.raylabs.doggie.data.source.local.BreedCategoryLocalDataSource;
 import com.raylabs.doggie.data.source.local.LocalDataSource;
 import com.raylabs.doggie.data.source.local.entity.DoggieEntity;
 import com.raylabs.doggie.data.source.remote.ApiResponse;
@@ -24,7 +26,6 @@ import kotlinx.coroutines.flow.Flow;
 public class DoggieRepository implements DoggieDataSource {
 
     private volatile static DoggieRepository INSTANCE = null;
-    private static final String TAG = "DoggieRepository";
 
     private static final int CATEGORY_PAGE_SIZE = 20;
     private static final int DEFAULT_BREED_IMAGE_PAGE_SIZE = 10;
@@ -32,17 +33,33 @@ public class DoggieRepository implements DoggieDataSource {
     private final RemoteDataSource remoteDataSource;
     private final LocalDataSource localDataSource;
     private final AppExecutors appExecutors;
+    private final BreedCategoryRepositoryHelper breedCategoryHelper;
 
-    private DoggieRepository(@NonNull RemoteDataSource remoteDataSource, LocalDataSource localDataSource, AppExecutors appExecutors) {
+    private DoggieRepository(@NonNull Context context,
+                             @NonNull RemoteDataSource remoteDataSource,
+                             LocalDataSource localDataSource,
+                             BreedCategoryLocalDataSource breedCategoryLocalDataSource,
+                             AppExecutors appExecutors) {
         this.remoteDataSource = remoteDataSource;
         this.localDataSource = localDataSource;
         this.appExecutors = appExecutors;
+        this.breedCategoryHelper = new BreedCategoryRepositoryHelper(
+                context,
+                remoteDataSource,
+                breedCategoryLocalDataSource,
+                new PagingConfig(CATEGORY_PAGE_SIZE, CATEGORY_PAGE_SIZE, false)
+        );
+        this.breedCategoryHelper.scheduleBackgroundSync();
     }
 
-    public static DoggieRepository getInstance(RemoteDataSource remoteDataSource, LocalDataSource localDataSource, AppExecutors appExecutors) {
+    public static DoggieRepository getInstance(Context context,
+                                               RemoteDataSource remoteDataSource,
+                                               LocalDataSource localDataSource,
+                                               BreedCategoryLocalDataSource breedCategoryLocalDataSource,
+                                               AppExecutors appExecutors) {
         if (INSTANCE == null) {
             synchronized (DoggieRepository.class) {
-                INSTANCE = new DoggieRepository(remoteDataSource, localDataSource, appExecutors);
+                INSTANCE = new DoggieRepository(context, remoteDataSource, localDataSource, breedCategoryLocalDataSource, appExecutors);
             }
         }
         return INSTANCE;
@@ -152,15 +169,11 @@ public class DoggieRepository implements DoggieDataSource {
 
     @Override
     public Flow<PagingData<BreedCategory>> getCategories() {
-        Pager<Integer, BreedCategory> pager = new Pager<>(
-                new PagingConfig(
-                        CATEGORY_PAGE_SIZE,
-                        CATEGORY_PAGE_SIZE,
-                        false
-                ),
-                () -> new CategoriesPagingSource(remoteDataSource, CATEGORY_PAGE_SIZE)
-        );
-        return pager.getFlow();
+        return breedCategoryHelper.pager();
+    }
+
+    public void requestCategoryPreview(BreedCategory category) {
+        breedCategoryHelper.requestPreview(category);
     }
 
     @Override
