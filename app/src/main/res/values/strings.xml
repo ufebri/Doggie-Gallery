@@ -22,4 +22,5 @@
     <string name="toast_share_failed">Unable to share image</string>
     <string name="toast_copy_success">Link copied to clipboard</string>
     <string name="toast_permission_denied">Permission denied</string>
+    <string name="search_hint_home">Search dog breeds and photos</string>
 </resources>
