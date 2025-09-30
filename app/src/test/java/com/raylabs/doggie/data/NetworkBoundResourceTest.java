@@ -1,6 +1,9 @@
 package com.raylabs.doggie.data;
 
+import static com.raylabs.doggie.vo.Status.ERROR;
+import static com.raylabs.doggie.vo.Status.SUCCESS;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -240,5 +243,61 @@ public class NetworkBoundResourceTest {
         assertEquals("network down", cap.value.message);
         // data terakhir tetap data DB
         assertEquals("CACHED", cap.value.data);
+    }
+
+    @Test
+    public void equals_returnsTrueForSameObject() {
+        Resource<String> resource = Resource.success("data");
+        assertEquals(resource, resource);
+    }
+
+    @Test
+    public void equals_returnsTrueForEqualObjects() {
+        Resource<String> resource1 = new Resource<>(SUCCESS, "data", "message");
+        Resource<String> resource2 = new Resource<>(SUCCESS, "data", "message");
+        assertEquals(resource1, resource2);
+        assertEquals(resource2, resource1);
+    }
+
+    @Test
+    public void equals_returnsFalseForDifferentFields() {
+        Resource<String> base = new Resource<>(SUCCESS, "data", "message");
+
+        Resource<String> differentStatus = new Resource<>(ERROR, "data", "message");
+        Resource<String> differentData = new Resource<>(SUCCESS, "otherData", "message");
+        Resource<String> differentMessage = new Resource<>(SUCCESS, "data", "otherMessage");
+
+        assertNotEquals(base, differentStatus);
+        assertNotEquals(base, differentData);
+        assertNotEquals(base, differentMessage);
+    }
+
+    @Test
+    public void hashCode_isEqualForEqualObjects() {
+        Resource<String> resource1 = new Resource<>(SUCCESS, "data", "message");
+        Resource<String> resource2 = new Resource<>(SUCCESS, "data", "message");
+        assertEquals(resource1.hashCode(), resource2.hashCode());
+    }
+
+    @Test
+    public void hashCode_differsForDifferentObjects() {
+        Resource<String> base = new Resource<>(SUCCESS, "data", "message");
+
+        Resource<String> differentStatus = new Resource<>(ERROR, "data", "message");
+        Resource<String> differentData = new Resource<>(SUCCESS, "otherData", "message");
+        Resource<String> differentMessage = new Resource<>(SUCCESS, "data", "otherMessage");
+
+        assertNotEquals(base.hashCode(), differentStatus.hashCode());
+        assertNotEquals(base.hashCode(), differentData.hashCode());
+        assertNotEquals(base.hashCode(), differentMessage.hashCode());
+    }
+
+    @Test
+    public void toString_containsStatusMessageAndData() {
+        Resource<String> resource = new Resource<>(SUCCESS, "data", "message");
+        String str = resource.toString();
+        assertTrue(str.contains("status=" + SUCCESS));
+        assertTrue(str.contains("message='message'"));
+        assertTrue(str.contains("data=data"));
     }
 }

@@ -3,6 +3,7 @@ package com.raylabs.doggie.data.source.local
 import androidx.paging.PagingSource
 import com.raylabs.doggie.data.source.local.entity.BreedCategoryEntity
 import com.raylabs.doggie.data.source.local.room.BreedCategoryDao
+import kotlinx.coroutines.flow.Flow
 
 class BreedCategoryLocalDataSource(private val dao: BreedCategoryDao) {
 
@@ -15,6 +16,8 @@ class BreedCategoryLocalDataSource(private val dao: BreedCategoryDao) {
     suspend fun findById(id: String): BreedCategoryEntity? = dao.findById(id)
 
     suspend fun allIds(): List<String> = dao.allIds()
+
+    fun observeAll(): Flow<List<BreedCategoryEntity>> = dao.observeAll()
 
     suspend fun updatePreview(id: String, url: String?, updatedAt: Long) =
         dao.updatePreview(id, url, updatedAt)

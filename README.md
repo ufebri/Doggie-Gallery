@@ -25,7 +25,10 @@ Doggie-Gallery is an Android application designed to showcase a delightful galle
 
 1.  Clone this repository.
 2.  Open the project using Android Studio.
-3.  Run the application on an Android emulator or a physical device.
+3. Copy `config.sample.properties` to `config.properties` and fill in:
+    - Release signing keystore location, alias, and passwords.
+    - Your AdMob app ID and banner ad unit IDs (production & optional debug).
+4. Run the application on an Android emulator or a physical device.
 
 ## API Integration
 
@@ -39,3 +42,14 @@ Screenshoot
 -----------
 <img src="./assets/image1.jpeg" height="350" alt="image 1" /> <img src="./assets/image2.jpeg" height="350" alt="image 2" /> <img src="./assets/image3.jpeg" height="350" alt="image 3" /> <img src="./assets/image4.jpeg" height="350" alt="image 4" /> <img src="./assets/image5.jpeg" height="350" alt="image 5" />
 
+## License
+
+Doggie Gallery is distributed under the **Doggie Gallery Commercial License (DGCL)**. See
+the [LICENSE](LICENSE) file for the exact grant of rights and restrictions. The project also depends
+on several third-party libraries (AndroidX, Retrofit, Glide, Google Mobile Ads, Firebase, etc.);
+please make sure you comply with their respective licenses when redistributing your end product.
+
+### Third-Party Notices
+
+A list of bundled third-party libraries and their licenses is available under [
+`licenses/THIRD_PARTY_NOTICES.md`](licenses/THIRD_PARTY_NOTICES.md).

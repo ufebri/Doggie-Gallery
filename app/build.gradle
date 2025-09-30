@@ -118,45 +118,68 @@ tasks.register("jacocoTestReport", JacocoReport) {
             '**/com/raylabs/doggie/data/source/local/room/**'
     ]
 
-    // === Kumpulkan lokasi class untuk beragam versi AGP (Linux CI friendly) ===
+    // === Cari file .class di seluruh buildDir (lebih toleran untuk variasi AGP/Gradle di CI) ===
     def b = layout.buildDirectory.get().asFile
-    def candidateDirs = [
-            new File(b, 'tmp/kotlin-classes/debug'),
-            new File(b, 'intermediates/javac/debug/classes'),
-            new File(b, 'intermediates/classes/debug'),
-            new File(b, 'intermediates/javac/debug'),
-            new File(b, 'intermediates/bytecode/debug')
-    ].findAll { it.exists() }
 
-    // Tambahan: beberapa AGP menaruh class ke dalam JAR
-    def candidateJars = [
-            new File(b, 'intermediates/compile_app_classes_jar/debug/classes.jar'),
-            new File(b, 'intermediates/aar_main_jar/debug/classes.jar')
-    ].findAll { it.exists() }
+    // 1) Semua direktori kelas yang umum untuk Kotlin/Java debug
+    def classDirTrees = [
+            fileTree(dir: new File(b, 'tmp/kotlin-classes/debug'), exclude: excludes),
+            fileTree(dir: new File(b, 'intermediates/javac/debug'), exclude: excludes),
+            fileTree(dir: new File(b, 'intermediates/javac/debug/classes'), exclude: excludes),
+            fileTree(dir: new File(b, 'intermediates/classes/debug'), exclude: excludes)
+    ].findAll { it.dir.exists() }
 
-    // Bangun FileTree untuk direktori dan JAR
-    def classTrees = candidateDirs.collect { dir -> fileTree(dir: dir, exclude: excludes) }
-    candidateJars.each { jar ->
-        classTrees.add(zipTree(jar).matching { exclude(excludes) })
+    // 2) Tambahan wildcard: sapu bersih semua *.class di folder debug
+    def wildcardClassTrees = fileTree(dir: b, include: [
+            'tmp/kotlin-classes/debug/**/*.class',
+            'tmp/kotlin-classes/debugUnitTest/**/*.class',
+            'tmp/kotlin-classes/release/**/*.class',
+            'intermediates/**/debug/**/*.class',
+            'intermediates/**/release/**/*.class'
+    ]).matching { exclude(excludes) }
+
+    // 3) Kelas di dalam classes.jar (beberapa AGP/CI menaruh di jar)
+    def classesJarFiles = fileTree(dir: b, include: ['**/classes.jar']).files
+    def jarClassTrees = classesJarFiles.collect { jar ->
+        return zipTree(jar).matching { exclude(excludes) }
     }
-    classDirectories.setFrom files(classTrees)
+
+    def allTrees = []
+    allTrees.addAll(classDirTrees)
+    // Selalu tambahkan hasil wildcard scan; beberapa runner mengembalikan FileTree yang tidak punya isEmpty()
+    allTrees.add(wildcardClassTrees)
+    allTrees.addAll(jarClassTrees)
+
+    // Gunakan from(...) langsung agar Gradle tidak mengosongkan koleksi FileTree
+    classDirectories.from(allTrees)
 
     // === Collect ALL execution data under buildDir (exec/ec) ===
     def execFiles = fileTree(dir: b, include: [
             '**/*.exec',
             '**/*.ec'
     ])
-    executionData.setFrom files(execFiles)
+    executionData.from(execFiles)
 
     // Debug log
     doFirst {
         println "[jacoco] buildDir = ${b.absolutePath}"
-        println "[jacoco] candidateDirs:"
-        candidateDirs.each { println " - DIR: ${it.absolutePath} (exists=${it.exists()})" }
-        candidateJars.each { println " - JAR: ${it.absolutePath} (exists=${it.exists()})" }
+
+        println "[jacoco] class dir trees:"
+        classDirTrees.each { println " - DIR tree: ${it.dir} (exists=${it.dir.exists()}) files=${it.files.size()}" }
+
+        println "[jacoco] wildcard debug class scan enabled"
+        println "[jacoco] wildcard classes count = ${wildcardClassTrees.files?.size() ?: 0}"
+        def preview = wildcardClassTrees.files?.take(10) ?: []
+        preview.each { println "   * ${it.absolutePath}" }
+        println "[jacoco] allTrees size = ${allTrees.size()} (dirTrees=${classDirTrees.size()}, jars=${classesJarFiles.size()})"
+
+        println "[jacoco] classes.jar found: ${classesJarFiles.size()}"
+        classesJarFiles.each { println " - JAR: ${it.absolutePath} (exists=${it.exists()})" }
+
         def total = 0
-        classTrees.each { ft -> total += ft.files.size() }
+        allTrees.each { ft -> total += ft.files.size() }
         println "[jacoco] class files included = ${total}"
+
         println "[jacoco] executionData files:"
         execFiles.each { println " - EXEC: ${it.absolutePath} (exists=${it.exists()})" }
     }

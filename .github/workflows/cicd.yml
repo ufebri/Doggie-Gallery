@@ -255,37 +255,50 @@ jobs:
         env:
           LWA_CLIENT_ID: ${{ secrets.AMAZON_LWA_CLIENT_ID }}
           LWA_CLIENT_SECRET: ${{ secrets.AMAZON_LWA_CLIENT_SECRET }}
-          LWA_REFRESH_TOKEN: ${{ secrets.AMAZON_LWA_REFRESH_TOKEN }}
         run: |
-          if [ -z "$LWA_CLIENT_ID" ] || [ -z "$LWA_CLIENT_SECRET" ] || [ -z "$LWA_REFRESH_TOKEN" ]; then
-            echo "Missing Amazon LWA secrets (AMAZON_LWA_CLIENT_ID/SECRET/REFRESH_TOKEN)" && exit 1
+          if [ -z "$LWA_CLIENT_ID" ] || [ -z "$LWA_CLIENT_SECRET" ]; then
+            echo "Missing Amazon LWA secrets (AMAZON_LWA_CLIENT_ID/SECRET)" && exit 1
           fi
           TOKEN_RESPONSE=$(curl -s -X POST \
             https://api.amazon.com/auth/o2/token \
             -H 'Content-Type: application/x-www-form-urlencoded' \
-            -d "grant_type=refresh_token&refresh_token=${LWA_REFRESH_TOKEN}&client_id=${LWA_CLIENT_ID}&client_secret=${LWA_CLIENT_SECRET}")
+            -d "grant_type=client_credentials&client_id=${LWA_CLIENT_ID}&client_secret=${LWA_CLIENT_SECRET}&scope=appstore::apps:readwrite")
           echo "$TOKEN_RESPONSE" | jq . >/dev/null || { echo "Invalid token response"; echo "$TOKEN_RESPONSE"; exit 1; }
           ACCESS_TOKEN=$(echo "$TOKEN_RESPONSE" | jq -r '.access_token')
           if [ "$ACCESS_TOKEN" = "null" ] || [ -z "$ACCESS_TOKEN" ]; then echo "Failed to obtain access token" && exit 1; fi
           echo "ACCESS_TOKEN=$ACCESS_TOKEN" >> $GITHUB_ENV
+          echo "::add-mask::$ACCESS_TOKEN"
 
-      - name: Create or fetch draft version in Amazon Appstore
-        id: create_version
+      - name: Create or fetch Edit in Amazon Appstore
+        id: create_edit
         env:
           ACCESS_TOKEN: ${{ env.ACCESS_TOKEN }}
           AMAZON_APP_ID: ${{ secrets.AMAZON_APP_ID }}
         run: |
-          if [ -z "$AMAZON_APP_ID" ]; then echo "Missing AMAZON_APP_ID secret" && exit 1; fi
-          BASE_URL="https://developer.amazon.com/api/appstore"
-          # Create a new draft version (API path may vary by account; adjust if your org uses a different version)
-          CREATE_RESP=$(curl -s -X POST "$BASE_URL/v1/applications/${AMAZON_APP_ID}/versions" \
-            -H "Authorization: Bearer $ACCESS_TOKEN" \
-            -H 'Content-Type: application/json' \
-            -d '{}')
-          echo "$CREATE_RESP" | jq . >/dev/null || { echo "Invalid create-version response"; echo "$CREATE_RESP"; exit 1; }
-          VERSION=$(echo "$CREATE_RESP" | jq -r '.versionId // .version // .id')
-          if [ "$VERSION" = "null" ] || [ -z "$VERSION" ]; then echo "Failed to resolve version id" && exit 1; fi
-          echo "VERSION_ID=$VERSION" >> $GITHUB_ENV
+          set -e
+          BASE="https://developer.amazon.com/api/appstore/v1/applications/${AMAZON_APP_ID}"
+
+          # Coba ambil edit aktif
+          GET_RESP=$(curl -s -H "Authorization: Bearer $ACCESS_TOKEN" "$BASE/edits")
+          EDIT_ID=$(echo "$GET_RESP" | jq -r '.editId // .id // empty')
+
+          # Kalau belum ada, buat edit baru
+          if [ -z "$EDIT_ID" ] || [ "$EDIT_ID" = "null" ]; then
+            CREATE_RESP=$(curl -s -X POST \
+              -H "Authorization: Bearer $ACCESS_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d '{}' "$BASE/edits")
+            EDIT_ID=$(echo "$CREATE_RESP" | jq -r '.editId // .id // empty')
+          fi
+
+          if [ -z "$EDIT_ID" ] || [ "$EDIT_ID" = "null" ]; then
+            echo "Failed to create or fetch edit"
+            echo "GET_RESP=$GET_RESP"
+            exit 1
+          fi
+
+          echo "EDIT_ID=$EDIT_ID" >> $GITHUB_ENV
+          echo "Edit: $EDIT_ID"
 
       - name: Read version from version.properties
         id: read_version_amazon
@@ -300,55 +313,48 @@ jobs:
         run: |
           echo "Release ${VERSION_NAME} (code ${VERSION_CODE})" > release-notes.txt
 
-      - name: Update Release Notes in Amazon Appstore (best effort)
+      - name: Update Release Notes in Edit (best effort)
         env:
           ACCESS_TOKEN: ${{ env.ACCESS_TOKEN }}
           AMAZON_APP_ID: ${{ secrets.AMAZON_APP_ID }}
-          VERSION_ID: ${{ env.VERSION_ID }}
+          EDIT_ID: ${{ env.EDIT_ID }}
           AMAZON_DEFAULT_LOCALE: ${{ secrets.AMAZON_DEFAULT_LOCALE }}
         run: |
           set -e
-          BASE_URL="https://developer.amazon.com/api/appstore"
+          BASE="https://developer.amazon.com/api/appstore/v1/applications/${AMAZON_APP_ID}/edits/${EDIT_ID}"
           LOCALE="${AMAZON_DEFAULT_LOCALE:-en_US}"
-          if [ ! -f release-notes.txt ]; then echo "release-notes.txt not found" && exit 0; fi
-          NOTES_JSON=$(jq -Rs . < release-notes.txt)
+          [ -f release-notes.txt ] || { echo "release-notes.txt not found; skip."; exit 0; }
 
-          # Coba beberapa bentuk payload & endpoint yang umum dipakai
           try_put() {
-            local url="$1"; shift
-            local payload="$1"; shift
-            echo "Attempt: PUT $url"
+            local url="$1"; local payload="$2"
             RESP=$(curl -s -X PUT "$url" \
               -H "Authorization: Bearer $ACCESS_TOKEN" \
               -H 'Content-Type: application/json' \
               -d "$payload") || true
-            echo "$RESP" | jq . >/dev/null 2>&1 || { echo "Response not JSON, continuing"; return 1; }
+            echo "$RESP" | jq . >/dev/null 2>&1 || return 1
             ERR=$(echo "$RESP" | jq -r '.error // .errors // empty')
-            if [ -n "$ERR" ]; then echo "API error: $ERR"; return 1; fi
+            [ -n "$ERR" ] && return 1
             return 0
           }
 
-          # Payload varian 1: field 'changelog'
-          DATA1=$(jq -n --arg notes $(cat release-notes.txt | jq -Rs .) '{changelog: $notes}')
-          # Payload varian 2: field 'releaseNotes'
-          DATA2=$(jq -n --arg notes $(cat release-notes.txt | jq -Rs .) '{releaseNotes: $notes}')
-          # Payload varian 3: nested listing
-          DATA3=$(jq -n --arg notes $(cat release-notes.txt | jq -Rs .) '{listing: {releaseNotes: $notes}}')
+          NOTES_CONTENT="$(cat release-notes.txt)"
+          DATA1=$(jq -n --arg notes "$NOTES_CONTENT" '{releaseNotes: $notes}')
+          DATA2=$(jq -n --arg notes "$NOTES_CONTENT" '{changelog: $notes}')
+          DATA3=$(jq -n --arg notes "$NOTES_CONTENT" '{listing: {releaseNotes: $notes}}')
 
-          # Endpoint kandidat (akan berbeda-beda berdasarkan akun/org)
           CANDIDATES=(
-            "$BASE_URL/v1/applications/${AMAZON_APP_ID}/versions/${VERSION_ID}/listings/${LOCALE}"
-            "$BASE_URL/v1/applications/${AMAZON_APP_ID}/versions/${VERSION_ID}/listings"
-            "$BASE_URL/v1/applications/${AMAZON_APP_ID}/versions/${VERSION_ID}/metadata/${LOCALE}"
+            "$BASE/listings/$LOCALE"
+            "$BASE/listings"
+            "$BASE/metadata/$LOCALE"
           )
 
-          for URL in "${CANDIDATES[@]}"; do
-            try_put "$URL" "$DATA1" && { echo "Release notes updated (payload1)"; exit 0; }
-            try_put "$URL" "$DATA2" && { echo "Release notes updated (payload2)"; exit 0; }
-            try_put "$URL" "$DATA3" && { echo "Release notes updated (payload3)"; exit 0; }
+          for U in "${CANDIDATES[@]}"; do
+            try_put "$U" "$DATA1" && { echo "Release notes updated (payload1)"; exit 0; }
+            try_put "$U" "$DATA2" && { echo "Release notes updated (payload2)"; exit 0; }
+            try_put "$U" "$DATA3" && { echo "Release notes updated (payload3)"; exit 0; }
           done
 
-          echo "Could not update release notes via known endpoints. Continuing without failing."
+          echo "Could not update release notes; continue."
           exit 0
 
       - name: Upload AAB to Amazon Appstore binary asset
@@ -367,17 +373,20 @@ jobs:
           STATUS=$(echo "$UPLOAD_RESP" | jq -r '.status // .state // .result')
           echo "Binary upload status: $STATUS"
 
-      - name: Submit version for review (optional)
+      - name: Commit Edit (submit for review)
         if: ${{ env.AMAZON_AUTO_SUBMIT == 'true' }}
         env:
           ACCESS_TOKEN: ${{ env.ACCESS_TOKEN }}
           AMAZON_APP_ID: ${{ secrets.AMAZON_APP_ID }}
-          VERSION_ID: ${{ env.VERSION_ID }}
-          AMAZON_AUTO_SUBMIT: ${{ secrets.AMAZON_AUTO_SUBMIT }}
+          EDIT_ID: ${{ env.EDIT_ID }}
         run: |
-          BASE_URL="https://developer.amazon.com/api/appstore"
-          SUBMIT_RESP=$(curl -s -X POST "$BASE_URL/v1/applications/${AMAZON_APP_ID}/versions/${VERSION_ID}/submit" \
-            -H "Authorization: Bearer $ACCESS_TOKEN" \
-            -H 'Content-Type: application/json' \
-            -d '{}')
-          echo "$SUBMIT_RESP" | jq . || true
+          set -e
+          BASE="https://developer.amazon.com/api/appstore/v1/applications/${AMAZON_APP_ID}/edits/${EDIT_ID}"
+          RESP=$(curl -s -X POST \
+                 -H "Authorization: Bearer $ACCESS_TOKEN" \
+                 -H "Content-Type: application/json" \
+                 -d '{}' "$BASE:commit")
+          echo "$RESP" | jq . || true
+          ERR=$(echo "$RESP" | jq -r '.error // .errors // empty')
+          [ -n "$ERR" ] && { echo "Commit error: $ERR"; exit 1; }
+          echo "Edit committed."
