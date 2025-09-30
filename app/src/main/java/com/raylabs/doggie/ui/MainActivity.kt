@@ -1,8 +1,8 @@
 package com.raylabs.doggie.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -14,6 +14,7 @@ import com.raylabs.doggie.ui.categories.CategoriesFragment
 import com.raylabs.doggie.ui.home.HomeFragment
 import com.raylabs.doggie.ui.liked.LikedFragment
 import com.raylabs.doggie.ui.popular.PopularFragment
+import com.raylabs.doggie.ui.search.SearchActivity
 import com.raylabs.doggie.utils.AdsHelper
 import com.raylabs.doggie.utils.ViewPagerAdapter
 import com.raylabs.doggie.utils.tab.AndroidDividerController
@@ -55,8 +56,10 @@ class MainActivity : AppCompatActivity() {
 
         populateTabLayout()
 
-        binding.searchBarContainer.setOnClickListener {
-            Toast.makeText(this, getString(R.string.search_hint_home), Toast.LENGTH_SHORT).show()
+        binding.searchBarContainer.setOnClickListener { view ->
+            val intent = Intent(this, SearchActivity::class.java)
+            val options = SearchActivity.buildOptions(this, view)
+            startActivity(intent, options)
         }
     }
 

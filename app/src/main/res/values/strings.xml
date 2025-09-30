@@ -23,4 +23,6 @@
     <string name="toast_copy_success">Link copied to clipboard</string>
     <string name="toast_permission_denied">Permission denied</string>
     <string name="search_hint_home">Search dog breeds and photos</string>
+    <string name="content_desc_filter">Open filter dialog</string>
+    <string name="search_empty">No results match your search yet.</string>
 </resources>

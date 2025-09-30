@@ -10,6 +10,7 @@
 
 # Files for the ART/Dalvik VM
 *.dex
+AGENTS.md
 
 # Java class files
 *.class

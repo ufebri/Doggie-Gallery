@@ -29,10 +29,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:foreground="?attr/selectableItemBackground"
+                android:transitionName="search_bar"
                 app:cardBackgroundColor="?attr/colorSurface"
                 app:cardCornerRadius="24dp"
-                app:cardElevation="1dp"
-                app:strokeColor="@android:color/black"
+                app:cardElevation="0dp"
+                app:strokeColor="@android:color/transparent"
                 tools:ignore="SpeakableTextPresentCheck">
 
                 <LinearLayout

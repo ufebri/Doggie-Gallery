@@ -34,6 +34,11 @@
             android:hardwareAccelerated="true" />
 
         <activity
+            android:name="com.raylabs.doggie.ui.search.SearchActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
+
+        <activity
             android:name="com.raylabs.doggie.ui.categories.detail.BreedGalleryActivity"
             android:exported="false"
             android:hardwareAccelerated="true" />

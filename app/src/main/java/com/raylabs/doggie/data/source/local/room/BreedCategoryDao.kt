@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.raylabs.doggie.data.source.local.entity.BreedCategoryEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface BreedCategoryDao {
@@ -24,6 +25,9 @@ interface BreedCategoryDao {
 
     @Query("SELECT id FROM breed_categories")
     suspend fun allIds(): List<String>
+
+    @Query("SELECT * FROM breed_categories ORDER BY displayName")
+    fun observeAll(): Flow<List<BreedCategoryEntity>>
 
     @Query(
         "UPDATE breed_categories SET previewImageUrl = :previewUrl, lastRefreshTimestamp = :updatedAt WHERE id = :id"

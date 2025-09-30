@@ -2,9 +2,8 @@ package com.raylabs.doggie.utils
 
 import android.app.Activity
 import android.content.Context
-import android.util.DisplayMetrics
+import android.os.Build
 import android.util.Log
-import android.view.Display
 import android.widget.FrameLayout
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
@@ -61,14 +60,15 @@ object AdsHelper {
     }
 
     private fun getAdaptiveAdSize(activity: Activity): AdSize {
-        val display: Display = activity.windowManager.defaultDisplay
-        val outMetrics = DisplayMetrics()
-        display.getMetrics(outMetrics)
+        val density = activity.resources.displayMetrics.density
+        val adWidthPixels = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val windowMetrics = activity.windowManager.currentWindowMetrics
+            windowMetrics.bounds.width().coerceAtLeast(0)
+        } else {
+            activity.resources.displayMetrics.widthPixels
+        }
 
-        val adWidthPixels = outMetrics.widthPixels.toFloat()
-        val density = outMetrics.density
-        val adWidth = (adWidthPixels / density).toInt()
-
+        val adWidth = (adWidthPixels / density).toInt().coerceAtLeast(1)
         return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(activity, adWidth)
     }
 }

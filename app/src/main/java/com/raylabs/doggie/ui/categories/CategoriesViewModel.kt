@@ -13,7 +13,7 @@ class CategoriesViewModel(
 ) : ViewModel() {
 
     val data: Flow<PagingData<BreedCategory>> =
-        repository.categories.cachedIn(viewModelScope)
+        repository.getCategories().cachedIn(viewModelScope)
 
     fun requestPreview(category: BreedCategory) {
         repository.requestCategoryPreview(category)

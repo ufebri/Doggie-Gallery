@@ -46,6 +46,12 @@ class BreedCategoryRepositoryHelper(
         }
     }
 
+    fun catalogFlow(): Flow<List<BreedCategory>> {
+        ensureSeeded()
+        return localDataSource.observeAll()
+            .map { entities -> entities.map { it.toDomain() } }
+    }
+
     fun requestPreview(category: BreedCategory) {
         val id = BreedCategoryEntity.createId(category.breed, category.subBreed)
         if (!inFlightPreviewRequests.add(id)) {

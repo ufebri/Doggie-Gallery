@@ -38,11 +38,10 @@ class DoggieRepositoryTest {
         local: LocalDataSource,
         breedLocal: BreedCategoryLocalDataSource
     ): DoggieRepository {
-        // DoggieRepository adalah singleton; untuk test, pastikan instance baru dibuat.
-        // Kita reset field INSTANCE via reflection supaya tidak kebawa antar test.
-        val field = DoggieRepository::class.java.getDeclaredField("INSTANCE")
-        field.isAccessible = true
-        field.set(null, null)
+        // DoggieRepository adalah singleton; reset supaya tidak kebawa antar test.
+        DoggieRepository.resetForTesting()
+
+        whenever(context.applicationContext).thenReturn(context)
 
         return DoggieRepository.getInstance(
             context,
@@ -55,10 +54,7 @@ class DoggieRepositoryTest {
 
     @After
     fun tearDown() {
-        // reset singleton setelah tiap test
-        val field = DoggieRepository::class.java.getDeclaredField("INSTANCE")
-        field.isAccessible = true
-        field.set(null, null)
+        DoggieRepository.resetForTesting()
     }
 
     @Test

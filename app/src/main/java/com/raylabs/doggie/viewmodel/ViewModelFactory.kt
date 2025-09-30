@@ -10,6 +10,7 @@ import com.raylabs.doggie.ui.categories.detail.BreedGalleryViewModel
 import com.raylabs.doggie.ui.home.HomeViewModel
 import com.raylabs.doggie.ui.liked.LikedViewModel
 import com.raylabs.doggie.ui.popular.PopularViewModel
+import com.raylabs.doggie.ui.search.SearchViewModel
 
 class ViewModelFactory private constructor(
     private val doggieRepository: DoggieRepository
@@ -31,6 +32,10 @@ class ViewModelFactory private constructor(
             )
 
             modelClass.isAssignableFrom(BreedGalleryViewModel::class.java) -> BreedGalleryViewModel(
+                doggieRepository
+            )
+
+            modelClass.isAssignableFrom(SearchViewModel::class.java) -> SearchViewModel(
                 doggieRepository
             )
 
