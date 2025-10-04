@@ -9,7 +9,7 @@
     <dimen name="search_pill_height">40dp</dimen>
 
     <!-- Component sizing -->
-    <dimen name="icon_size_medium">24dp</dimen>
+    <dimen name="icon_size_medium">32dp</dimen>
     <dimen name="interactive_touch_target">40dp</dimen>
     <dimen name="interactive_icon_padding">8dp</dimen>
 

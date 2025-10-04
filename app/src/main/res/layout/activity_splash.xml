@@ -13,7 +13,7 @@
         android:id="@+id/appCompatImageView"
         android:layout_width="@dimen/splash_logo_size"
         android:layout_height="@dimen/splash_logo_size"
-        android:src="@drawable/ic_splash_logo"
+        android:src="@mipmap/ic_launcher"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -2,9 +2,6 @@
     android:viewportHeight="50" android:viewportWidth="50"
     android:width="50dp" xmlns:android="http://schemas.android.com/apk/res/android">
     <path
-        android:fillColor="@color/search_bar_background"
-        android:pathData="M25,25m-25,0a25,25 0,1 1,50 0a25,25 0,1 1,-50 0" />
-    <path
         android:fillColor="@color/text_primary"
         android:pathData="M17,17H24V15H17C15.9,15 15,15.9 15,17V24H17V17ZM23,26L19,31H31L28,27L25.97,29.71L23,26ZM30,21.5C30,20.67 29.33,20 28.5,20C27.67,20 27,20.67 27,21.5C27,22.33 27.67,23 28.5,23C29.33,23 30,22.33 30,21.5ZM33,15H26V17H33V24H35V17C35,15.9 34.1,15 33,15ZM33,33H26V35H33C34.1,35 35,34.1 35,33V26H33V33ZM17,26H15V33C15,34.1 15.9,35 17,35H24V33H17V26Z" />
 </vector>
