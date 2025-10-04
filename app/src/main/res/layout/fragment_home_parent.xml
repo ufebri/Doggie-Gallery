@@ -7,10 +7,10 @@
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tl_main"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_margin="10dp"
+        android:layout_height="@dimen/section_tab_height"
+        android:layout_margin="@dimen/section_tab_margin"
         android:clipToPadding="false"
-        android:elevation="1dp"
+        android:elevation="@dimen/stroke_thin"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -18,10 +18,14 @@
         app:tabBackground="@drawable/bg_tab"
         app:tabGravity="fill"
         app:tabIndicatorColor="@android:color/transparent"
-        app:tabIndicatorHeight="0dp"
+        app:tabIndicatorHeight="@dimen/dimen_zero"
+        app:tabPaddingBottom="@dimen/spacing_xs"
+        app:tabPaddingEnd="@dimen/spacing_md"
+        app:tabPaddingStart="@dimen/spacing_md"
+        app:tabPaddingTop="@dimen/spacing_xs"
         app:tabMode="scrollable"
         app:tabRippleColor="@android:color/transparent"
-        app:tabSelectedTextColor="@android:color/white"
+        app:tabSelectedTextColor="@color/text_inverse"
         app:tabTextAppearance="@style/TextAppearance.AppCompat.Small"
         app:tabTextColor="@color/colorText" />
 
@@ -29,7 +33,7 @@
         android:id="@+id/vp_home"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_margin="@dimen/section_tab_margin"
         android:saveEnabled="true"
         app:layout_constraintTop_toBottomOf="@id/tl_main" />
 

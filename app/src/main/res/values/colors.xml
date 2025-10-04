@@ -1,9 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="colorBgTabSelected">#FF6263</color>
-    <color name="colorText">#A1A1A1</color>
-    <color name="colorStatusBar">#8F03A9F4</color>
+    <!-- Brand palette -->
+    <color name="colorPrimary">#F2753F</color>
+    <color name="colorPrimaryDark">#C55E31</color>
+    <color name="colorAccent">#3D8DFF</color>
+
+    <!-- Surfaces & strokes -->
+    <color name="colorSurface">#F9F5F1</color>
+    <color name="search_bar_background">#FFFFFFFF</color>
+    <color name="search_bar_stroke">#19000000</color>
+    <color name="surface_overlay_dark">#B3000000</color>
+
+    <!-- Typography -->
+    <color name="text_primary">#1F2933</color>
+    <color name="text_secondary">#6C7A89</color>
+    <color name="text_inverse">#FFFFFFFF</color>
+    <color name="search_hint_text">#8090A2B0</color>
+
+    <!-- Legacy compatibility colors -->
+    <color name="colorText">#6C7A89</color>
 </resources>

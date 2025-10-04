@@ -1,80 +1,196 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="?attr/bottomSheetStyle"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:behavior_draggable="false"
-    app:layout_behavior="@string/bottom_sheet_behavior"
-    app:shapeAppearance="?attr/shapeAppearanceLargeComponent">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingHorizontal="@dimen/toolbar_horizontal_padding"
+    android:paddingBottom="@dimen/spacing_lg">
+
+    <TextView
+        android:id="@+id/tv_action_title"
+        style="@style/TextAppearance.MaterialComponents.Headline6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/detail_actions_title"
+        android:textColor="@color/text_primary" />
+
+    <TextView
+        android:id="@+id/tv_action_subtitle"
+        style="@style/TextAppearance.MaterialComponents.Body2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_xs"
+        android:text="@string/detail_actions_subtitle"
+        android:textColor="@color/text_secondary" />
 
     <LinearLayout
-        android:id="@+id/ll_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="top|center_vertical">
+        android:layout_marginTop="@dimen/spacing_md"
+        android:gravity="center"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_action_download"
+        <!-- Download Action -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_action_download"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/small_margin"
-            android:layout_weight="1"
-            android:elevation="0dp"
-            android:text="@string/download"
-            android:textAlignment="center"
-            android:textColor="@android:color/black"
-            app:drawableTopCompat="@drawable/ic_action_download" />
+            android:layout_marginBottom="@dimen/spacing_sm"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            app:cardBackgroundColor="@color/colorSurface"
+            app:cardCornerRadius="@dimen/search_card_corner"
+            app:cardElevation="2dp"
+            app:strokeColor="@color/search_bar_stroke"
+            app:strokeWidth="@dimen/stroke_thin">
 
-        <TextView
-            android:id="@+id/tv_action_setWallpaper"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/spacing_md"
+                android:paddingVertical="@dimen/spacing_md">
+
+                <ImageView
+                    android:layout_width="@dimen/icon_size_medium"
+                    android:layout_height="@dimen/icon_size_medium"
+                    android:src="@drawable/ic_action_download"
+                    app:tint="@color/text_primary" />
+
+                <TextView
+                    style="@style/TextAppearance.MaterialComponents.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_md"
+                    android:text="@string/download"
+                    android:textAllCaps="false"
+                    android:textColor="@color/text_primary" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Set Wallpaper Action -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_action_wallpaper"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/small_margin"
-            android:layout_weight="1"
-            android:elevation="0dp"
-            android:maxLines="2"
-            android:text="@string/set_as_wallpaper"
-            android:textAlignment="center"
-            android:textColor="@android:color/black"
-            app:drawableTopCompat="@drawable/ic_action_set_wallpaper" />
+            android:layout_marginBottom="@dimen/spacing_sm"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            app:cardBackgroundColor="@color/colorSurface"
+            app:cardCornerRadius="@dimen/search_card_corner"
+            app:cardElevation="2dp"
+            app:strokeColor="@color/search_bar_stroke"
+            app:strokeWidth="@dimen/stroke_thin">
 
-        <TextView
-            android:id="@+id/tv_action_share"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/spacing_md"
+                android:paddingVertical="@dimen/spacing_md">
+
+                <ImageView
+                    android:layout_width="@dimen/icon_size_medium"
+                    android:layout_height="@dimen/icon_size_medium"
+                    android:src="@drawable/ic_action_set_wallpaper"
+                    app:tint="@color/text_primary" />
+
+                <TextView
+                    style="@style/TextAppearance.MaterialComponents.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_md"
+                    android:text="@string/set_as_wallpaper"
+                    android:textAllCaps="false"
+                    android:textColor="@color/text_primary" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Share Action -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_action_share"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/small_margin"
-            android:layout_weight="1"
-            android:elevation="0dp"
-            android:maxLines="2"
-            android:text="@string/share"
-            android:textAlignment="center"
-            android:textColor="@android:color/black"
-            app:drawableTopCompat="@drawable/ic_action_share" />
+            android:layout_marginBottom="@dimen/spacing_sm"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            app:cardBackgroundColor="@color/colorSurface"
+            app:cardCornerRadius="@dimen/search_card_corner"
+            app:cardElevation="2dp"
+            app:strokeColor="@color/search_bar_stroke"
+            app:strokeWidth="@dimen/stroke_thin">
 
-        <TextView
-            android:id="@+id/tv_action_copy"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/spacing_md"
+                android:paddingVertical="@dimen/spacing_md">
+
+                <ImageView
+                    android:layout_width="@dimen/icon_size_medium"
+                    android:layout_height="@dimen/icon_size_medium"
+                    android:src="@drawable/ic_action_share"
+                    app:tint="@color/text_primary" />
+
+                <TextView
+                    style="@style/TextAppearance.MaterialComponents.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_md"
+                    android:text="@string/share"
+                    android:textAllCaps="false"
+                    android:textColor="@color/text_primary" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Copy Action -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_action_copy"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/small_margin"
-            android:layout_weight="1"
-            android:elevation="0dp"
-            android:maxLines="2"
-            android:text="@string/copy"
-            android:textAlignment="center"
-            android:textColor="@android:color/black"
-            app:drawableTopCompat="@drawable/ic_action_copy" />
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            app:cardBackgroundColor="@color/colorSurface"
+            app:cardCornerRadius="@dimen/search_card_corner"
+            app:cardElevation="2dp"
+            app:strokeColor="@color/search_bar_stroke"
+            app:strokeWidth="@dimen/stroke_thin">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/spacing_md"
+                android:paddingVertical="@dimen/spacing_md">
+
+                <ImageView
+                    android:layout_width="@dimen/icon_size_medium"
+                    android:layout_height="@dimen/icon_size_medium"
+                    android:src="@drawable/ic_action_copy"
+                    app:tint="@color/text_primary" />
+
+                <TextView
+                    style="@style/TextAppearance.MaterialComponents.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_md"
+                    android:text="@string/copy"
+                    android:textAllCaps="false"
+                    android:textColor="@color/text_primary" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
     <TextView
-        android:id="@+id/tv_copyright"
+        android:id="@+id/tv_credit"
+        style="@style/TextAppearance.MaterialComponents.Caption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="top|center_horizontal"
-        android:layout_marginTop="160dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginTop="@dimen/spacing_md"
+        android:gravity="center"
         android:text="@string/copyright"
-        android:textAlignment="center"
-        android:textColor="@android:color/darker_gray"
-        android:textStyle="italic" />
-</FrameLayout>
+        android:textColor="@color/text_secondary" />
+
+</LinearLayout>

@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.raylabs.doggie.R
 import com.raylabs.doggie.data.source.local.entity.DoggieEntity
 import com.raylabs.doggie.databinding.FragmentPopularBinding
 import com.raylabs.doggie.ui.ImagesAdapter
@@ -79,7 +80,11 @@ class PopularFragment : Fragment() {
                 Status.ERROR -> {
                     currentBinding.pbPopular.visibility = View.GONE
                     currentBinding.rvPopular.visibility = View.GONE
-                    Toast.makeText(context, "Failed Get Image", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        getString(R.string.error_image_load),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 null -> Unit

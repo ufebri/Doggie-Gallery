@@ -4,13 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?android:attr/colorBackgroundFloating"
+    android:overScrollMode="never"
     tools:context=".ui.detail.DetailBottomSheetFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="8dp">
+        android:paddingBottom="@dimen/detail_sheet_margin_top">
 
         <ImageView
             android:id="@+id/iv_bs_content"
@@ -18,7 +19,7 @@
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:contentDescription="@string/content_desc_detail_image"
-            android:maxHeight="500dp"
+            android:maxHeight="@dimen/detail_sheet_max_height"
             android:scaleType="centerCrop"
             tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
@@ -27,14 +28,14 @@
             layout="@layout/item_detail_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="@dimen/detail_sheet_margin_top" />
 
         <FrameLayout
             android:id="@+id/adViewBs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:minHeight="50dp" />
+            android:layout_marginTop="@dimen/detail_sheet_margin_top"
+            android:minHeight="@dimen/detail_sheet_min_height" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

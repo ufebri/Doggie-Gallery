@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-
-    <!-- radius should be half of the desired TabLayout height -->
-    <corners android:radius="15dp" />
-
-    <!-- color of the unselected tab - changed from transparent to white -->
-    <solid android:color="@android:color/white" />
-
-</shape>
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:insetLeft="@dimen/section_tab_inset"
+    android:insetTop="@dimen/section_tab_inset"
+    android:insetRight="@dimen/section_tab_inset"
+    android:insetBottom="@dimen/section_tab_inset">
+    <shape android:shape="rectangle">
+        <corners android:radius="@dimen/section_tab_corner_radius" />
+        <solid android:color="@color/colorSurface" />
+    </shape>
+</inset>

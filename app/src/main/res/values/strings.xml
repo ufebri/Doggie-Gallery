@@ -23,6 +23,15 @@
     <string name="toast_copy_success">Link copied to clipboard</string>
     <string name="toast_permission_denied">Permission denied</string>
     <string name="search_hint_home">Search dog breeds and photos</string>
-    <string name="content_desc_filter">Open filter dialog</string>
+    <string name="content_desc_back">Go back</string>
+    <string name="content_desc_clear_search">Clear search query</string>
     <string name="search_empty">No results match your search yet.</string>
+    <string name="load_state_retry">Retry</string>
+    <string name="ad_placeholder">Ad placement</string>
+    <string name="error_image_load">Failed to load images</string>
+    <string name="error_missing_breed">Breed not provided</string>
+    <string name="empty_liked_images">No liked images yet.</string>
+    <string name="error_liked_images">Failed to load liked images.</string>
+    <string name="detail_actions_title">Image options</string>
+    <string name="detail_actions_subtitle">Choose what you want to do with this photo.</string>
 </resources>
