@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.raylabs.doggie.R
 import com.raylabs.doggie.databinding.FragmentCategoriesBinding
 import com.raylabs.doggie.ui.categories.detail.BreedGalleryActivity
 import com.raylabs.doggie.ui.common.PagingLoadStateAdapter
@@ -69,11 +70,9 @@ class CategoriesFragment : Fragment() {
                 ?: loadStates.prepend as? androidx.paging.LoadState.Error
                 ?: refresh as? androidx.paging.LoadState.Error
             errorState?.let {
-                Toast.makeText(
-                    context,
-                    it.error.localizedMessage ?: "Failed Get Image",
-                    Toast.LENGTH_SHORT
-                ).show()
+                val message = it.error.localizedMessage
+                    ?: getString(R.string.error_image_load)
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
             }
         }
 

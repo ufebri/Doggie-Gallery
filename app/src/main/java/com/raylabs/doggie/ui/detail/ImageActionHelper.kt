@@ -1,10 +1,12 @@
 package com.raylabs.doggie.ui.detail
 
+import android.app.WallpaperManager
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
+import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -66,7 +68,7 @@ object ImageActionHelper {
                 if (!bitmap.compress(CompressFormat.JPEG, 90, outputStream)) {
                     return false
                 }
-                android.media.MediaScannerConnection.scanFile(
+                MediaScannerConnection.scanFile(
                     context,
                     arrayOf(imageFile.absolutePath),
                     arrayOf("image/jpeg"),
@@ -108,7 +110,7 @@ object ImageActionHelper {
     @WorkerThread
     fun setWallpaper(context: Context, bitmap: Bitmap): Boolean {
         return try {
-            android.app.WallpaperManager.getInstance(context).setBitmap(bitmap)
+            WallpaperManager.getInstance(context).setBitmap(bitmap)
             true
         } catch (_: IOException) {
             false
