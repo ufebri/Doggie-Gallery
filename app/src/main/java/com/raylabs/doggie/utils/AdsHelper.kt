@@ -188,10 +188,6 @@ object AdsHelper {
         loadAdError: LoadAdError? = null,
         extras: Map<String, String?> = emptyMap()
     ) {
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "Crashlytics suppressed in debug: $event")
-            return
-        }
 
         runCatching {
             val crashlytics = FirebaseCrashlytics.getInstance()

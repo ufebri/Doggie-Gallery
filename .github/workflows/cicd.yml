@@ -37,6 +37,8 @@ jobs:
           echo "ADMOB_ID_BANNER_PROD=${{ secrets.ADMOB_ID_BANNER_PROD }}" >> config.properties
           echo "ADMOB_ID_DEV=${{ secrets.ADMOB_ID_DEV }}" >> config.properties
           echo "ADMOB_ID_BANNER_DEV=${{ secrets.ADMOB_ID_BANNER_DEV }}" >> config.properties
+          echo "ADMOB_ID_REWARD_PROD=${{ secrets.ADMOB_ID_REWARD_PROD }}" >> config.properties
+          echo "ADMOB_ID_REWARD_DEV=${{ secrets.ADMOB_ID_REWARD_DEV }}" >> config.properties
       
 
       # Step 4: Upload environment files as artifact

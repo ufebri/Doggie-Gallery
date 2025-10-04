@@ -80,9 +80,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun applySystemBarsStyle(root: View, colorRes: Int, lightIcons: Boolean) {
         val controller = WindowCompat.getInsetsController(window, root)
-        controller?.isAppearanceLightStatusBars = lightIcons
+        controller.isAppearanceLightStatusBars = lightIcons
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            controller?.isAppearanceLightNavigationBars = lightIcons
+            controller.isAppearanceLightNavigationBars = lightIcons
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             @Suppress("DEPRECATION")
