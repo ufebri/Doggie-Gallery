@@ -63,7 +63,7 @@ public class NetworkBoundResourceTest {
         MutableLiveData<String> db = new MutableLiveData<>();
         db.setValue("DB-DATA");
 
-        NetworkBoundResource<String, String> nbr = new NetworkBoundResource<String, String>(new TestAppExecutors()) {
+        NetworkBoundResource<String, String> nbr = new NetworkBoundResource<>(new TestAppExecutors()) {
             @Override
             protected LiveData<String> loadFromDB() {
                 return db;
@@ -105,7 +105,7 @@ public class NetworkBoundResourceTest {
 
         final String[] stored = new String[1];
 
-        NetworkBoundResource<String, String> nbr = new NetworkBoundResource<String, String>(new TestAppExecutors()) {
+        NetworkBoundResource<String, String> nbr = new NetworkBoundResource<>(new TestAppExecutors()) {
             @Override
             protected LiveData<String> loadFromDB() {
                 // loadFromDB membaca dari stored jika ada, else dari db awal
@@ -155,7 +155,7 @@ public class NetworkBoundResourceTest {
 
         MutableLiveData<ApiResponse<String>> api = new MutableLiveData<>();
 
-        NetworkBoundResource<String, String> nbr = new NetworkBoundResource<String, String>(new TestAppExecutors()) {
+        NetworkBoundResource<String, String> nbr = new NetworkBoundResource<>(new TestAppExecutors()) {
             @Override
             protected LiveData<String> loadFromDB() {
                 MutableLiveData<String> read = new MutableLiveData<>();
@@ -202,7 +202,7 @@ public class NetworkBoundResourceTest {
 
         final boolean[] onFetchFailedCalled = {false};
 
-        NetworkBoundResource<String, String> nbr = new NetworkBoundResource<String, String>(new TestAppExecutors()) {
+        NetworkBoundResource<String, String> nbr = new NetworkBoundResource<>(new TestAppExecutors()) {
             @Override
             protected LiveData<String> loadFromDB() {
                 MutableLiveData<String> read = new MutableLiveData<>();

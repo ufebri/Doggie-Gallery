@@ -87,6 +87,7 @@ class DetailBottomSheetFragment : BottomSheetDialogFragment() {
             binding?.adViewBs?.let { container ->
                 AdsHelper.loadBanner(activity, container)
             }
+            AdsHelper.preloadRewarded(activity.applicationContext)
         }
 
         if (link.isNullOrEmpty()) {
@@ -101,10 +102,10 @@ class DetailBottomSheetFragment : BottomSheetDialogFragment() {
 
     private fun setUpActionButtons() {
         val actionsBinding = binding?.llBsDetailImage ?: return
-        actionsBinding.tvActionDownload.setOnClickListener { onDownloadClicked() }
-        actionsBinding.tvActionSetWallpaper.setOnClickListener { onSetWallpaperClicked() }
-        actionsBinding.tvActionShare.setOnClickListener { onShareClicked() }
-        actionsBinding.tvActionCopy.setOnClickListener { onCopyClicked() }
+        actionsBinding.cardActionDownload.setOnClickListener { onDownloadClicked() }
+        actionsBinding.cardActionWallpaper.setOnClickListener { onSetWallpaperClicked() }
+        actionsBinding.cardActionShare.setOnClickListener { onShareClicked() }
+        actionsBinding.cardActionCopy.setOnClickListener { onCopyClicked() }
     }
 
     private fun onDownloadClicked() {
@@ -132,7 +133,12 @@ class DetailBottomSheetFragment : BottomSheetDialogFragment() {
             val success = ImageActionHelper.saveBitmapToGallery(appContext, bitmap)
             withContext(Dispatchers.Main) {
                 if (!isAdded) return@withContext
-                showToast(if (success) R.string.toast_download_success else R.string.toast_download_failed)
+                if (success) {
+                    showToast(R.string.toast_download_success)
+                    AdsHelper.showRewarded(requireActivity())
+                } else {
+                    showToast(R.string.toast_download_failed)
+                }
             }
         }
     }
@@ -146,7 +152,12 @@ class DetailBottomSheetFragment : BottomSheetDialogFragment() {
             val success = ImageActionHelper.setWallpaper(currentContext, bitmap)
             withContext(Dispatchers.Main) {
                 if (!isAdded) return@withContext
-                showToast(if (success) R.string.toast_wallpaper_success else R.string.toast_wallpaper_failed)
+                if (success) {
+                    showToast(R.string.toast_wallpaper_success)
+                    AdsHelper.showRewarded(requireActivity())
+                } else {
+                    showToast(R.string.toast_wallpaper_failed)
+                }
             }
         }
     }
@@ -172,6 +183,7 @@ class DetailBottomSheetFragment : BottomSheetDialogFragment() {
                 }
 
                 runCatching {
+                    AdsHelper.showRewarded(requireActivity())
                     startActivity(
                         android.content.Intent.createChooser(
                             shareIntent,
@@ -193,6 +205,7 @@ class DetailBottomSheetFragment : BottomSheetDialogFragment() {
                 ?: return
         clipboard.setPrimaryClip(android.content.ClipData.newPlainText("Doggie image", imageLink))
         showToast(R.string.toast_copy_success)
+        AdsHelper.showRewarded(requireActivity())
     }
 
     private fun ensureImageReady(): Boolean {

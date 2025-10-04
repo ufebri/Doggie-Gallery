@@ -4,10 +4,12 @@ on:
   push:
     branches:
       - master
+      - amazonappstore
 
   pull_request:
     branches:
       - master
+      - amazonappstore
 
 jobs:
   setup-env:
@@ -212,6 +214,7 @@ jobs:
           format: jacoco
 
   amazon-store-upload:
+    if: github.ref == 'refs/heads/amazonappstore'
     runs-on: ubuntu-latest
     needs: code-coverage
 

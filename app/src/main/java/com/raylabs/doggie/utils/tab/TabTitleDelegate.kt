@@ -1,21 +1,20 @@
-package com.raylabs.doggie.utils.tab;
+package com.raylabs.doggie.utils.tab
 
-public final class TabTitleDelegate {
-    private final String[] titles;
+class TabTitleDelegate(titlesInput: Array<String>?) {
 
-    public TabTitleDelegate(String[] titles) {
-        if (titles == null) throw new IllegalArgumentException("titles cannot be null");
-        this.titles = titles;
+    private val titles: Array<String>
+
+    init {
+        requireNotNull(titlesInput) { "titles cannot be null" }
+        titles = titlesInput
     }
 
-    public String requireAt(int position) {
-        if (position < 0 || position >= titles.length) {
-            throw new IndexOutOfBoundsException("Invalid index: " + position + ", size: " + titles.length);
+    fun requireAt(position: Int): String {
+        if (position !in titles.indices) {
+            throw IndexOutOfBoundsException("Invalid index: $position, size: ${titles.size}")
         }
-        return titles[position];
+        return titles[position]
     }
 
-    public int size() {
-        return titles.length;
-    }
+    fun size(): Int = titles.size
 }

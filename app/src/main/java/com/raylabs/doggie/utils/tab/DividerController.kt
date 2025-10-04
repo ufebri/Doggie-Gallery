@@ -1,9 +1,10 @@
-package com.raylabs.doggie.utils.tab;
+package com.raylabs.doggie.utils.tab
 
-public interface DividerController {
+/** Controller abstraction so TabDividerDelegate can work with different tab layouts. */
+interface DividerController {
     /** return true kalau underlying view group adalah LinearLayout (atau setara) */
-    boolean isLinearLayout();
+    fun isLinearLayout(): Boolean
 
     /** hilangkan divider (dipanggil hanya kalau isLinearLayout() == true) */
-    void removeDividers();
+    fun removeDividers()
 }

@@ -1,6 +1,10 @@
 <vector android:autoMirrored="true" android:height="50dp"
     android:viewportHeight="50" android:viewportWidth="50"
     android:width="50dp" xmlns:android="http://schemas.android.com/apk/res/android">
-    <path android:fillColor="#C4C4C4" android:pathData="M25,25m-25,0a25,25 0,1 1,50 0a25,25 0,1 1,-50 0"/>
-    <path android:fillColor="#000000" android:pathData="M29,14H17C15.9,14 15,14.9 15,16V30H17V16H29V14ZM28,18L34,24V34C34,35.1 33.1,36 32,36H20.99C19.89,36 19,35.1 19,34L19.01,20C19.01,18.9 19.9,18 21,18H28ZM27,25H32.5L27,19.5V25Z"/>
+    <path
+        android:fillColor="@color/search_bar_background"
+        android:pathData="M25,25m-25,0a25,25 0,1 1,50 0a25,25 0,1 1,-50 0" />
+    <path
+        android:fillColor="@color/text_primary"
+        android:pathData="M29,14H17C15.9,14 15,14.9 15,16V30H17V16H29V14ZM28,18L34,24V34C34,35.1 33.1,36 32,36H20.99C19.89,36 19,35.1 19,34L19.01,20C19.01,18.9 19.9,18 21,18H28ZM27,25H32.5L27,19.5V25Z" />
 </vector>

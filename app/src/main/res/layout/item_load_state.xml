@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:orientation="horizontal"
-    android:padding="16dp">
+    android:padding="@dimen/load_state_padding">
 
     <ProgressBar
         android:id="@+id/progress_bar"
@@ -16,17 +16,17 @@
         android:id="@+id/tv_error"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="@dimen/load_state_text_margin"
+        android:layout_marginEnd="@dimen/load_state_text_margin"
         android:layout_weight="1"
-        android:textColor="@android:color/black"
+        android:textColor="@color/text_primary"
         android:visibility="gone" />
 
     <Button
         android:id="@+id/btn_retry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Retry"
+        android:text="@string/load_state_retry"
         android:visibility="gone" />
 
 </LinearLayout>

@@ -1,38 +1,39 @@
-package com.raylabs.doggie.utils;
+package com.raylabs.doggie.utils
 
-import java.util.List;
+/**
+ * Small helper that guards a list of pager items and optional titles.
+ */
+class PagerDelegate<T> private constructor(
+    private val items: List<T>,
+    private val titles: List<String>?
+) {
 
-public final class PagerDelegate<T> {
-    private final List<T> items;
-    private final List<String> titles; // boleh null
-
-    public static <T> PagerDelegate<T> of(List<T> items, List<String> maybeTitles) {
-        if (items == null) throw new IllegalArgumentException("items cannot be null");
-        if (maybeTitles != null && items.size() != maybeTitles.size()) {
-            throw new IllegalArgumentException("Jumlah Fragment dan Judul harus sama!");
+    init {
+        if (titles != null && items.size != titles.size) {
+            throw IllegalArgumentException("Jumlah Fragment dan Judul harus sama!")
         }
-        return new PagerDelegate<>(items, maybeTitles);
     }
 
-    private PagerDelegate(List<T> items, List<String> titles) {
-        this.items = items;
-        this.titles = titles;
-    }
+    val count: Int
+        get() = items.size
 
-    public int getCount() {
-        return items.size();
-    }
-
-    public T requireAt(int position) {
-        if (position < 0 || position >= items.size()) {
-            throw new IndexOutOfBoundsException("Posisi tidak valid: " + position + ", ukuran: " + items.size());
+    fun requireAt(position: Int): T {
+        if (position !in items.indices) {
+            throw IndexOutOfBoundsException("Posisi tidak valid: $position, ukuran: ${items.size}")
         }
-        return items.get(position);
+        return items[position]
     }
 
-    public String getTitleOrNull(int position) {
-        if (titles == null) return null;
-        if (position < 0 || position >= titles.size()) return null;
-        return titles.get(position);
+    fun getTitleOrNull(position: Int): String? {
+        val safeTitles = titles ?: return null
+        return safeTitles.getOrNull(position)
+    }
+
+    companion object {
+        @JvmStatic
+        fun <T> of(items: List<T>?, maybeTitles: List<String>?): PagerDelegate<T> {
+            requireNotNull(items) { "items cannot be null" }
+            return PagerDelegate(items, maybeTitles)
+        }
     }
 }

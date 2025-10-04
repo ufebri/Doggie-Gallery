@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp">
+    android:layout_margin="@dimen/grid_item_margin">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -13,7 +13,7 @@
             android:id="@+id/iv_animal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxHeight="250dp"
+            android:maxHeight="@dimen/grid_item_height_expanded"
             tools:ignore="ContentDescription"
             android:scaleType="centerCrop"
             tools:src="@mipmap/ic_launcher" />

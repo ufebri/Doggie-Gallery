@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.raylabs.doggie.R
 import com.raylabs.doggie.data.source.local.entity.DoggieEntity
 import com.raylabs.doggie.databinding.FragmentLikedBinding
 import com.raylabs.doggie.ui.ImagesAdapter
@@ -75,7 +76,11 @@ class LikedFragment : Fragment() {
                     currentBinding.pbLiked.visibility = View.GONE
                     if (data.isEmpty()) {
                         currentBinding.rvLiked.visibility = View.GONE
-                        Toast.makeText(context, "No liked images yet.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            context,
+                            getString(R.string.empty_liked_images),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     } else {
                         currentBinding.rvLiked.visibility = View.VISIBLE
                     }
@@ -84,7 +89,11 @@ class LikedFragment : Fragment() {
                 Status.ERROR -> {
                     currentBinding.pbLiked.visibility = View.GONE
                     currentBinding.rvLiked.visibility = View.GONE
-                    Toast.makeText(context, "Failed to load liked images.", Toast.LENGTH_SHORT)
+                    Toast.makeText(
+                        context,
+                        getString(R.string.error_liked_images),
+                        Toast.LENGTH_SHORT
+                    )
                         .show()
                 }
 

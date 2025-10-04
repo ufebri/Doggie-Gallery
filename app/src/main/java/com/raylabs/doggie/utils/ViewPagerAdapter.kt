@@ -1,38 +1,20 @@
-package com.raylabs.doggie.utils;
+package com.raylabs.doggie.utils
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.adapter.FragmentStateAdapter
 
-import java.util.List;
+class ViewPagerAdapter(
+    fragmentActivity: FragmentActivity,
+    fragments: List<Fragment>,
+    fragmentTitles: List<String>? = null
+) : FragmentStateAdapter(fragmentActivity) {
 
-public class ViewPagerAdapter extends FragmentStateAdapter {
+    private val delegate = PagerDelegate.of(fragments, fragmentTitles)
 
-    private final PagerDelegate<Fragment> delegate;
+    override fun getItemCount(): Int = delegate.count
 
-    public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity, List<Fragment> fragments) {
-        super(fragmentActivity);
-        this.delegate = PagerDelegate.of(fragments, null);
-    }
+    override fun createFragment(position: Int): Fragment = delegate.requireAt(position)
 
-    public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity, List<Fragment> fragments, List<String> fragmentTitles) {
-        super(fragmentActivity);
-        this.delegate = PagerDelegate.of(fragments, fragmentTitles);
-    }
-
-    @NonNull
-    @Override
-    public Fragment createFragment(int position) {
-        return delegate.requireAt(position);
-    }
-
-    @Override
-    public int getItemCount() {
-        return delegate.getCount();
-    }
-
-    public String getPageTitle(int position) {
-        return delegate.getTitleOrNull(position);
-    }
+    fun getPageTitle(position: Int): String? = delegate.getTitleOrNull(position)
 }

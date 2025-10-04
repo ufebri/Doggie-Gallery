@@ -5,6 +5,7 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorSurface"
     android:fitsSystemWindows="false">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -12,42 +13,43 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorSurface"
-        android:elevation="0dp"
+        android:elevation="@dimen/dimen_zero"
         app:liftOnScroll="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingHorizontal="8dp"
-            android:paddingTop="16dp"
-            android:paddingBottom="8dp"
+            android:paddingHorizontal="@dimen/home_header_padding_horizontal"
+            android:paddingTop="@dimen/home_header_padding_top"
+            android:paddingBottom="@dimen/home_header_padding_bottom"
             app:layout_scrollFlags="scroll|enterAlways">
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/searchBarContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:foreground="?attr/selectableItemBackground"
+                android:foreground="@android:color/transparent"
                 android:transitionName="search_bar"
-                app:cardBackgroundColor="?attr/colorSurface"
-                app:cardCornerRadius="24dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@android:color/transparent"
+                app:cardBackgroundColor="@color/search_bar_background"
+                app:cardCornerRadius="@dimen/search_card_corner"
+                app:cardElevation="@dimen/dimen_zero"
+                app:strokeColor="@color/search_bar_stroke"
+                app:strokeWidth="@dimen/stroke_thin"
                 tools:ignore="SpeakableTextPresentCheck">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="4dp"
+                    android:layout_marginVertical="@dimen/card_margin_vertical_micro"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:paddingHorizontal="16dp"
-                    android:paddingVertical="12dp">
+                    android:paddingHorizontal="@dimen/toolbar_horizontal_padding"
+                    android:paddingVertical="@dimen/toolbar_vertical_padding">
 
                     <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
+                        android:layout_width="@dimen/icon_size_medium"
+                        android:layout_height="@dimen/icon_size_medium"
                         android:contentDescription="@string/search_hint_home"
                         android:src="@android:drawable/ic_menu_search"
                         app:tint="?android:textColorSecondary" />
@@ -56,7 +58,7 @@
                         android:id="@+id/tvSearchHint"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
+                        android:layout_marginStart="@dimen/search_hint_margin_end"
                         android:layout_weight="1"
                         android:text="@string/search_hint_home"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
@@ -69,17 +71,17 @@
                 android:id="@+id/nativeAdContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="8dp"
-                android:minHeight="52dp"
+                android:layout_marginTop="@dimen/home_ad_margin_top"
+                android:layout_marginBottom="@dimen/home_ad_margin_bottom"
+                android:minHeight="@dimen/banner_min_height"
                 tools:ignore="UselessParent">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:padding="16dp"
-                    android:text="Ad placement"
+                    android:padding="@dimen/load_state_padding"
+                    android:text="@string/ad_placeholder"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                     android:textColor="?android:textColorSecondary"
                     tools:visibility="visible" />
@@ -90,9 +92,9 @@
                 android:id="@+id/quickActionsScroll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="@dimen/quick_actions_scroll_margin_bottom"
                 android:overScrollMode="never"
-                android:paddingHorizontal="4dp"
+                android:paddingHorizontal="@dimen/card_margin_vertical_micro"
                 android:visibility="gone">
 
                 <LinearLayout
@@ -100,8 +102,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:paddingHorizontal="12dp"
-                    android:paddingBottom="4dp" />
+                    android:paddingHorizontal="@dimen/quick_actions_padding_horizontal"
+                    android:paddingBottom="@dimen/quick_actions_padding_bottom" />
 
             </HorizontalScrollView>
 
@@ -111,18 +113,21 @@
             android:id="@+id/tl_main"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginHorizontal="@dimen/tab_margin_horizontal"
+            android:layout_marginBottom="@dimen/tab_margin_bottom"
             android:clipToPadding="false"
             android:orientation="horizontal"
-            app:layout_scrollFlags="scroll|enterAlways"
             app:tabBackground="@drawable/bg_tab"
             app:tabGravity="fill"
             app:tabIndicatorColor="@android:color/transparent"
-            app:tabIndicatorHeight="0dp"
+            app:tabIndicatorHeight="@dimen/dimen_zero"
+            app:tabPaddingBottom="@dimen/spacing_xs"
+            app:tabPaddingEnd="@dimen/spacing_md"
+            app:tabPaddingStart="@dimen/spacing_md"
+            app:tabPaddingTop="@dimen/spacing_xs"
             app:tabMode="scrollable"
             app:tabRippleColor="@android:color/transparent"
-            app:tabSelectedTextColor="@android:color/white"
+            app:tabSelectedTextColor="@color/text_inverse"
             app:tabTextAppearance="@style/TextAppearance.AppCompat.Small"
             app:tabTextColor="@color/colorText" />
 
@@ -133,7 +138,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
-        android:paddingBottom="16dp"
+        android:paddingBottom="@dimen/viewpager_bottom_padding"
         android:saveEnabled="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context=".ui.MainActivity" />

@@ -1,13 +1,11 @@
-package com.raylabs.doggie.utils.tab;
+package com.raylabs.doggie.utils.tab
 
-public final class TabDividerDelegate {
-    private TabDividerDelegate() {}
-
+object TabDividerDelegate {
     /** logic murni yang bisa di-unit test */
-    public static void apply(DividerController controller) {
-        if (controller == null) return;
-        if (controller.isLinearLayout()) {
-            controller.removeDividers();
+    @JvmStatic
+    fun apply(controller: DividerController?) {
+        if (controller?.isLinearLayout() == true) {
+            controller.removeDividers()
         }
     }
 }
