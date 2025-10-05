@@ -9,6 +9,7 @@
         android:maxSdkVersion="28" />
 
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
@@ -18,7 +19,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name="com.raylabs.doggie.SplashActivity"
+            android:name="com.raylabs.doggie.ui.splash.SplashActivity"
             android:exported="true"
             android:noHistory="true">
             <intent-filter>

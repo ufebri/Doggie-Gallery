@@ -1,4 +1,4 @@
-package com.raylabs.doggie
+package com.raylabs.doggie.ui.splash
 
 import android.annotation.SuppressLint
 import android.content.Intent

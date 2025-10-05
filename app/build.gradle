@@ -49,11 +49,15 @@ android {
             resValue("string", "ads_application_id", apikeyProperties["ADMOB_ID_PROD"])
             resValue("string", "admob_banner_id", apikeyProperties["ADMOB_ID_BANNER_PROD"])
             resValue("string", "admob_reward_id", apikeyProperties["ADMOB_ID_REWARD_PROD"])
+            buildConfigField "boolean", "ENABLE_CRASHLYTICS", "true"
+            buildConfigField "boolean", "ENABLE_ADS", "true"
         }
 
         debug {
             debuggable true
             minifyEnabled false
+            buildConfigField "boolean", "ENABLE_CRASHLYTICS", "false"
+            buildConfigField "boolean", "ENABLE_ADS", "true"
             resValue("string", "ads_application_id", apikeyProperties["ADMOB_ID_DEV"])
             resValue("string", "admob_banner_id", apikeyProperties["ADMOB_ID_BANNER_DEV"])
             resValue("string", "admob_reward_id", apikeyProperties["ADMOB_ID_REWARD_DEV"])
