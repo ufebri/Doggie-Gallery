@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.util.Log
+import android.view.View
 import android.widget.FrameLayout
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdListener
@@ -27,6 +28,7 @@ object AdsHelper {
     private var loadingRewarded = false
 
     fun init(appContext: Context) {
+        if (!BuildConfig.ENABLE_ADS) return
         if (!initialized) {
             MobileAds.initialize(appContext.applicationContext) {
                 Log.d(TAG, "MobileAds.initialize complete.")
@@ -36,6 +38,10 @@ object AdsHelper {
     }
 
     fun loadBanner(activity: Activity, adContainer: FrameLayout?) {
+        if (!BuildConfig.ENABLE_ADS) {
+            adContainer?.visibility = View.GONE
+            return
+        }
         if (adContainer == null) {
             Log.e(TAG, "Ad container is null.")
             return
@@ -90,6 +96,7 @@ object AdsHelper {
     }
 
     fun preloadRewarded(context: Context) {
+        if (!BuildConfig.ENABLE_ADS) return
         if (rewardedAd != null || loadingRewarded) return
 
         val adUnitId = context.getString(R.string.admob_reward_id)
@@ -135,6 +142,10 @@ object AdsHelper {
     }
 
     fun showRewarded(activity: Activity, onClosed: (() -> Unit)? = null) {
+        if (!BuildConfig.ENABLE_ADS) {
+            onClosed?.invoke()
+            return
+        }
         val ad = rewardedAd
         if (ad == null) {
             preloadRewarded(activity.applicationContext)
